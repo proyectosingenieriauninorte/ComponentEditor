@@ -1,0 +1,20 @@
+{
+  "name": "template-component-editor",
+  "version": "1.0.0",
+  "description": "A simple web application for creating and linking boxes with lines.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@douyinfe/semi-ui": "^2.51.3"
+  },
+  "devDependencies": {
+    "vite": "^4.1.0",
+    "@vitejs/plugin-react": "^3.1.0"
+  }
+}
