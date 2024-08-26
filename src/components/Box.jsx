@@ -1,51 +1,46 @@
-import { useState } from "react";
-import { Input } from "@douyinfe/semi-ui";
+import React, { useState } from "react";
 
-export default function Box({ data, onPointerDown, handleGripField, setLinkingLine }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(data.name);
+export default function Box({ data, updateBoxPosition }) {
+  const [dragging, setDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  const handleDoubleClick = () => {
-    setIsEditing(true);
+  const handleMouseDown = (e) => {
+    setDragging(true);
+    setOffset({
+      x: e.clientX - data.x,
+      y: e.clientY - data.y,
+    });
   };
 
-  const handleBlur = () => {
-    setIsEditing(false);
-    // Update the box name in the parent component or context here if needed.
+  const handleMouseMove = (e) => {
+    if (dragging) {
+      const newX = e.clientX - offset.x;
+      const newY = e.clientY - offset.y;
+      updateBoxPosition(data.id, newX, newY);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(false);
   };
 
   return (
-    <foreignObject
+    <svg
       x={data.x}
       y={data.y}
-      width={150}
-      height={50}
-      onPointerDown={onPointerDown}
-      className="cursor-pointer"
+      width="150"
+      height="50"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      style={{ cursor: 'pointer' }}
     >
-      <div
-        className="border border-gray-400 bg-white p-2 rounded"
-        onDoubleClick={handleDoubleClick}
-      >
-        {isEditing ? (
-          <Input
-            value={name}
-            onChange={setName}
-            onBlur={handleBlur}
-            autoFocus
-          />
-        ) : (
-          <span>{name}</span>
-        )}
-        <button
-          className="absolute right-0 bottom-0 m-1 p-1 rounded-full bg-blue-500"
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            handleGripField();
-            setLinkingLine({ startBoxId: data.id, startX: data.x + 75, startY: data.y + 25 });
-          }}
-        />
-      </div>
-    </foreignObject>
+      <rect width="150" height="50" fill="white" stroke="gray" />
+      <foreignObject x="0" y="0" width="150" height="50">
+        <div className="box-content">
+          {data.name}
+        </div>
+      </foreignObject>
+    </svg>
   );
 }

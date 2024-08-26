@@ -1,14 +1,60 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-  }
-  
-  .foreignObject {
-    overflow: visible;
-  }
-  
-  .cursor-pointer {
-    cursor: pointer;
-  }
-  
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: start;
+  background-color: #333;
+  padding: 10px;
+  color: white;
+}
+
+.toolbar button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+.toolbar button:hover {
+  color: #ccc;
+}
+
+.main-layout {
+  display: flex;
+  height: calc(100% - 50px);
+}
+
+.properties-panel {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.canvas {
+  flex-grow: 1;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  position: relative;
+}
+
+.box-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 16px;
+  color: black;
+}

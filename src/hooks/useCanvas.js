@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 export function useCanvas() {
-  const [boxes, setBoxes] = useState([]); // Start with an empty array
+  const [boxes, setBoxes] = useState([]);
   const [lines, setLines] = useState([]);
 
   const addBox = () => {
-    if (boxes.length === 0) { // Check if there are no boxes
+    if (boxes.length === 0) {
       const newBox = {
         id: boxes.length + 1,
         name: `Box ${boxes.length + 1}`,
@@ -26,6 +26,6 @@ export function useCanvas() {
     boxes,
     lines,
     addBox,
-    updateBoxPosition,
+    updateBoxPosition,  // Ensure this function is returned
   };
 }
