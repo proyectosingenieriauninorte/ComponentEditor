@@ -45,9 +45,11 @@ body, html {
 
 .canvas {
   flex-grow: 1;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #ffffff;
   position: relative;
+  overflow: scroll;
+  background-image: radial-gradient(#bbb 1px, transparent 1px);
+  background-size: 20px 20px; /* Adjust the grid size as needed */
 }
 
 .box-content {

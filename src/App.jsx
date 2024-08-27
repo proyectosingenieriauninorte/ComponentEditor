@@ -7,7 +7,7 @@ import { useCanvas } from "./hooks";
 function App() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, addLine, updateBox } = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition } = useCanvas();
 
   const handleSelectTool = (tool) => {
     setSelectedTool(tool);
@@ -23,13 +23,13 @@ function App() {
     <div className="app-container">
       <Toolbar onSelectTool={handleSelectTool} />
       <div className="main-layout">
-        <PropertiesPanel selectedBox={selectedBox} onUpdateBox={updateBox} />
+        <PropertiesPanel selectedBox={selectedBox} onUpdateBox={updateBoxPosition} />
         <Canvas
           selectedTool={selectedTool}
           boxes={boxes}
           lines={lines}
           addBox={addBox}
-          addLine={addLine}
+          updateBoxPosition={updateBoxPosition}
           onSelectBox={handleSelectBox}
         />
       </div>

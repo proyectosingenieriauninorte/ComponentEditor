@@ -2,9 +2,10 @@ import React from "react";
 import Box from "./Box";
 import Line from "./Line";
 
+
 export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox, updateBoxPosition }) {
   const handleClick = () => {
-    if (selectedTool === "box") {
+    if (selectedTool === "box" && boxes.length === 0) { // Ensures only one box can be added
       addBox();
     }
   };
@@ -16,7 +17,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox
           key={box.id}
           data={box}
           onPointerDown={() => onSelectBox(box.id)}
-          updateBoxPosition={updateBoxPosition}  // Ensure this is passed correctly
+          updateBoxPosition={updateBoxPosition}  // Passed correctly
         />
       ))}
       {lines.map((line) => (
@@ -25,3 +26,4 @@ export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox
     </div>
   );
 }
+
