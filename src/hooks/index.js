@@ -1,35 +1,41 @@
 import { useState } from "react";
 
-// useCanvas custom hook
 export function useCanvas() {
-  const [boxes, setBoxes] = useState([]);
-  const [lines, setLines] = useState([]);
+  const [boxes, setBoxes] = useState([]);  // Initialized as an empty array
+  const [lines, setLines] = useState([]);  // Initialized as an empty array
 
-  // Function to add a new box
   const addBox = () => {
-    if (boxes.length === 0) {
-      const newBox = {
-        id: boxes.length + 1,
-        name: `Box ${boxes.length + 1}`,
-        x: 800,
-        y: 200,
-      };
-      setBoxes([...boxes, newBox]);
-    }
+    const newBox = {
+      id: boxes.length + 1,
+      name: `Box ${boxes.length + 1}`,
+      x: 100, // Initial x position
+      y: 100, // Initial y position
+      color: '#f00', // Example color
+      selected: false,
+    };
+    setBoxes([...boxes, newBox]);
+    console.log(`Added Box ID: ${newBox.id}, Initial Position: (${newBox.x}, ${newBox.y})`);
   };
 
-  // Function to update the position of a box
   const updateBoxPosition = (id, x, y) => {
-    setBoxes((prev) =>
-      prev.map((box) => (box.id === id ? { ...box, x, y } : box))
+    setBoxes((prevBoxes) =>
+      prevBoxes.map((box) =>
+        box.id === id ? { ...box, x: x, y: y } : box
+      )
     );
-    console.log(`updateBoxPosition -> (${x}, ${y})`); // Debug message
+    console.log(`Updated Box Position: ID ${id}, New Position: (${x}, ${y})`);
+  };
+
+  const deleteBox = (id) => {
+    setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
+    console.log(`Deleted Box ID: ${id}`);
   };
 
   return {
     boxes,
-    lines,
+    lines,  // Ensure this is returned properly
     addBox,
     updateBoxPosition,
+    deleteBox,
   };
 }
