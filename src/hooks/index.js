@@ -3,16 +3,17 @@ import { useState } from "react";
 export function useCanvas() {
   const [boxes, setBoxes] = useState([]);
 
-  const addBox = () => {
+  const addBox = (x, y) => {
     const newBox = {
       id: boxes.length + 1,
       name: `Box ${boxes.length + 1}`,
-      x: 100 + boxes.length * 10,
-      y: 100 + boxes.length * 10,
+      x: x || 100,  // Ensure that x is set, with a fallback to 100
+      y: y || 100,  // Ensure that y is set, with a fallback to 100
       color: '#f00',
       selected: false,
     };
     setBoxes([...boxes, newBox]);
+    console.log(`Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
   };
 
   const updateBoxPosition = (id, x, y) => {

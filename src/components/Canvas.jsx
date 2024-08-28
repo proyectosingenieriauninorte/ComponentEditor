@@ -3,9 +3,13 @@ import Box from "./Box";
 import Line from "./Line";
 
 export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox, updateBoxPosition, deleteBox }) {
-  const handleClick = () => {
+  const handleClick = (e) => {
     if (selectedTool === "box") {
-      addBox();
+      const canvasRect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - canvasRect.left;  // Calculate x relative to canvas
+      const y = e.clientY - canvasRect.top;   // Calculate y relative to canvas
+      console.log(`Canvas clicked at: (${x}, ${y})`);  // Debugging log
+      addBox(x, y);  // Pass the x and y coordinates to addBox
     }
   };
 
