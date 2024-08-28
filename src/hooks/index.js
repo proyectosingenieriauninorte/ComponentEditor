@@ -1,16 +1,16 @@
 import { useState } from "react";
 
 export function useCanvas() {
-  const [boxes, setBoxes] = useState([]);  // Initialized as an empty array
-  const [lines, setLines] = useState([]);  // Initialized as an empty array
+  const [boxes, setBoxes] = useState([]);  // Array to store multiple boxes
+  const [lines, setLines] = useState([]);  // Array to store lines (if needed)
 
   const addBox = () => {
     const newBox = {
       id: boxes.length + 1,
       name: `Box ${boxes.length + 1}`,
-      x: 100, // Initial x position
-      y: 100, // Initial y position
-      color: '#f00', // Example color
+      x: 100 + boxes.length * 10,  // Offset new boxes slightly for visibility
+      y: 100 + boxes.length * 10,  // Offset new boxes slightly for visibility
+      color: '#f00',  // Example color
       selected: false,
     };
     setBoxes([...boxes, newBox]);
@@ -33,7 +33,7 @@ export function useCanvas() {
 
   return {
     boxes,
-    lines,  // Ensure this is returned properly
+    lines,
     addBox,
     updateBoxPosition,
     deleteBox,

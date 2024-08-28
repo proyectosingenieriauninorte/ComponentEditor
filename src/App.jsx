@@ -17,6 +17,13 @@ function App() {
     setSelectedBoxId(id);
   };
 
+  const handleAddBox = () => {
+    if (selectedTool === "box") {
+      addBox();
+      setSelectedTool(null); // Reset tool after adding a box
+    }
+  };
+
   const selectedBox = boxes.find((box) => box.id === selectedBoxId);
 
   return (
@@ -28,7 +35,7 @@ function App() {
           selectedTool={selectedTool}
           boxes={boxes}
           lines={lines}
-          addBox={addBox}
+          addBox={handleAddBox}  // Use handleAddBox to reset the tool after adding
           updateBoxPosition={updateBoxPosition}
           deleteBox={deleteBox}
           onSelectBox={handleSelectBox}

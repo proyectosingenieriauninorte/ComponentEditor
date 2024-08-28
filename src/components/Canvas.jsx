@@ -2,9 +2,9 @@ import React from "react";
 import Box from "./Box";
 import Line from "./Line";
 
-export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox, updateBoxPosition, deleteBox }) {  // Default to empty arrays
+export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox, updateBoxPosition, deleteBox }) {
   const handleClick = () => {
-    if (selectedTool === "box" && boxes.length === 0) { // Ensures only one box can be added
+    if (selectedTool === "box") {
       addBox();
     }
   };
