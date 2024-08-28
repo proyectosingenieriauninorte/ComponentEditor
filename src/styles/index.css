@@ -1,11 +1,49 @@
 .canvas {
-  background-color: #f0f0f0; /* Light gray background */
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  background-color: #f0f0f0;
+  background-image: radial-gradient(circle, black 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
+/* Style for the box */
+.box-container {
+  border: 2px solid black;
+  background-color: white;
+  position: relative;
+  cursor: move;
+  border-radius: 5px;
+}
+
+.box-container .box-header {
+  height: 10px;
+  width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.box-container .box-content {
+  overflow: hidden;
+  font-weight: bold;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid gray;
+  background-color: #e0e0e0;
+  padding: 5px;
+}
+
+.box-container.selected {
+  border: 2px solid blue;
+  border-style: solid;
+}
+
+.box-container:hover {
+  border-style: dashed;
+  border-color: blue;
+}
 .app-container {
   display: flex;
   flex-direction: column;

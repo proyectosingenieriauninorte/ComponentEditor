@@ -10,7 +10,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
   };
 
   return (
-    <div className="canvas" onClick={handleClick} style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div className="canvas" onClick={handleClick}>
       {boxes.map((box) => (
         <Box
           key={box.id}

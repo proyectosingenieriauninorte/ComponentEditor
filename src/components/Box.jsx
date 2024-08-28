@@ -16,7 +16,7 @@ export default function Box(props) {
     deleteBox,
   } = props;
 
-  const buttonRef = useRef(); // Create a ref for the button
+  const buttonRef = useRef();
 
   const height = 50; // Static height for a box
   const width = 150; // Static width for a box
@@ -59,7 +59,7 @@ export default function Box(props) {
   }, [dragging]);
 
   return (
-    <svg // Ensure that foreignObject is inside an SVG element
+    <svg
       x={boxData.x}
       y={boxData.y}
       width={width}
@@ -70,33 +70,16 @@ export default function Box(props) {
       <foreignObject
         width={width}
         height={height}
-        className="group drop-shadow-lg rounded-md"
+        className={`box-container ${boxData.selected ? 'selected' : ''}`}
       >
-        <div
-          className={`border-2 border-gray-500 hover:border-dashed hover:border-blue-500
-               select-none rounded-lg w-full ${
-                 boxData.selected
-                   ? "border-solid border-blue-500"
-                   : "border-gray-500"
-               }`}
-          style={{ direction: "ltr", backgroundColor: 'white', position: 'relative', cursor: 'move' }}
-        >
-          <div
-            className="h-[10px] w-full rounded-t-md"
-            style={{ backgroundColor: boxData.color }}
-          />
-          <div
-            className={`overflow-hidden font-bold h-[40px] flex justify-between items-center border-b border-gray-400 ${
-              "bg-zinc-200"
-            }`}
-          >
-            <div className="px-3 overflow-hidden text-ellipsis whitespace-nowrap">
-              {boxData.name}
-            </div>
+        <div>
+          <div className="box-header" style={{ backgroundColor: boxData.color }} />
+          <div className="box-content">
+            <div>{boxData.name}</div>
             <div className="hidden group-hover:block">
               <div className="flex justify-end items-center mx-2">
                 <Button
-                  ref={buttonRef} // Attach the ref to the button
+                  ref={buttonRef}
                   icon={<IconEdit />}
                   size="small"
                   theme="solid"
