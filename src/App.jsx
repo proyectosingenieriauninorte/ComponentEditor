@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Canvas from "./components/Canvas";
 import Toolbar from "./components/Toolbar";
 import PropertiesPanel from "./components/PropertiesPanel";
-import { useCanvas } from "./hooks/index";
+import { useCanvas } from "./hooks";  // Import from index.js
 
 function App() {
   const [selectedTool, setSelectedTool] = useState(null);
@@ -15,6 +15,13 @@ function App() {
 
   const handleSelectBox = (id) => {
     setSelectedBoxId(id);
+  };
+
+  const handleAddBox = () => {
+    if (selectedTool === "box") {
+      addBox();
+      setSelectedTool(null);  // Reset tool after adding a box
+    }
   };
 
   const handleUpdateBox = (id, updatedProperties) => {
@@ -35,7 +42,7 @@ function App() {
           selectedTool={selectedTool}
           boxes={boxes}
           lines={lines}
-          addBox={addBox}
+          addBox={handleAddBox}  // Use handleAddBox to reset the tool after adding
           updateBoxPosition={updateBoxPosition}
           onSelectBox={handleSelectBox}
         />
