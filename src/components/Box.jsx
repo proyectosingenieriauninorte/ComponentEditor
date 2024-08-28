@@ -16,7 +16,7 @@ export default function Box(props) {
     deleteBox,
   } = props;
 
-  const buttonRef = useRef();
+  const buttonRef = useRef(); // Create a ref for the button
 
   const height = 50; // Static height for a box
   const width = 150; // Static width for a box
@@ -79,7 +79,7 @@ export default function Box(props) {
             <div className="hidden group-hover:block">
               <div className="flex justify-end items-center mx-2">
                 <Button
-                  ref={buttonRef}
+                  ref={buttonRef} // Attach the ref to the button
                   icon={<IconEdit />}
                   size="small"
                   theme="solid"

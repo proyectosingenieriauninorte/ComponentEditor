@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Canvas from "./components/Canvas";
 import Toolbar from "./components/Toolbar";
 import PropertiesPanel from "./components/PropertiesPanel";
-import { useCanvas } from "./hooks";
+import { useCanvas } from "./hooks/index";
 
 function App() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, deleteBox } = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition, updateBox } = useCanvas();
 
   const handleSelectTool = (tool) => {
     setSelectedTool(tool);
@@ -17,11 +17,8 @@ function App() {
     setSelectedBoxId(id);
   };
 
-  const handleAddBox = () => {
-    if (selectedTool === "box") {
-      addBox();
-      setSelectedTool(null); // Reset tool after adding a box
-    }
+  const handleUpdateBox = (id, updatedProperties) => {
+    updateBox(id, updatedProperties);
   };
 
   const selectedBox = boxes.find((box) => box.id === selectedBoxId);
@@ -30,14 +27,16 @@ function App() {
     <div className="app-container">
       <Toolbar onSelectTool={handleSelectTool} />
       <div className="main-layout">
-        <PropertiesPanel selectedBox={selectedBox} onUpdateBox={updateBoxPosition} />
+        <PropertiesPanel
+          selectedBox={selectedBox}
+          onUpdateBox={handleUpdateBox}
+        />
         <Canvas
           selectedTool={selectedTool}
           boxes={boxes}
           lines={lines}
-          addBox={handleAddBox}  // Use handleAddBox to reset the tool after adding
+          addBox={addBox}
           updateBoxPosition={updateBoxPosition}
-          deleteBox={deleteBox}
           onSelectBox={handleSelectBox}
         />
       </div>
