@@ -17,9 +17,9 @@ function App() {
     setSelectedBoxId(id);
   };
 
-  const handleAddBox = () => {
+  const handleAddBox = (x,y) => {
     if (selectedTool === "box") {
-      addBox();
+      addBox(x,y);
       setSelectedTool(null);  // Reset tool after adding a box
     }
   };
