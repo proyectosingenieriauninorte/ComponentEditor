@@ -14,11 +14,13 @@ function App() {
   };
 
   const handleSelectBox = (id) => {
+    console.log(`App.js Selected Box ID: ${id}`);
     setSelectedBoxId(id);
   };
 
   const handleAddBox = (x,y) => {
     if (selectedTool === "box") {
+      console.log(`App.js Adding box at: (${x}, ${y})`);
       addBox(x,y);
       setSelectedTool(null);  // Reset tool after adding a box
     }
