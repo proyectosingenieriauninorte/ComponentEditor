@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-export default function Box({ data, updateBoxPosition }) {
+export default function Box(props) {
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const {
+    boxData,
+    onPointerDown,
+    updateBoxPosition,
+    deleteBox,
+  } = props;
 
   const handleMouseDown = (e) => {
+    e.preventDefault();
     setDragging(true);
     setOffset({
-      x: e.clientX - data.x,
-      y: e.clientY - data.y,
+      x: e.clientX - boxData.x,
+      y: e.clientY - boxData.y,
     });
-    e.target.style.cursor = 'grabbing';
+    if (onPointerDown) onPointerDown(boxData.id); // Notify parent that this box is selected
   };
 
   const handleMouseMove = (e) => {
     if (dragging) {
       const newX = e.clientX - offset.x;
       const newY = e.clientY - offset.y;
-      updateBoxPosition(data.id, newX, newY);
+      updateBoxPosition(boxData.id, newX, newY);
     }
   };
 
   const handleMouseUp = () => {
-    if (dragging) {
-      setDragging(false);
-    }
+    setDragging(false);
   };
 
   useEffect(() => {
@@ -43,23 +48,26 @@ export default function Box({ data, updateBoxPosition }) {
   }, [dragging]);
 
   return (
-    <>
-      {console.log(`Rendering Box ID: ${data.id}, Position: (${data.x}, ${data.y})`)}
-      <svg
-        x={data.x}  // Ensure this is updating correctly
-        y={data.y}  // Ensure this is updating correctly
+    <svg
+      x={boxData.x}
+      y={boxData.y}
+      width="150"
+      height="50"
+      onMouseDown={handleMouseDown}
+      style={{ position: 'absolute', left: boxData.x, top: boxData.y, cursor: 'grab' }}
+    >
+      <foreignObject
         width="150"
         height="50"
-        onMouseDown={handleMouseDown}
-        style={{ cursor: 'grab' }}  // Removed position: absolute
+        className={`box-container ${boxData.selected ? 'selected' : ''}`}
       >
-        <rect width="150" height="50" fill="white" stroke="gray" />
-        <foreignObject x="0" y="0" width="150" height="50">
+        <div>
+          <div className="box-header" style={{ backgroundColor: boxData.color }} />
           <div className="box-content">
-            {data.name}
+            <div>{boxData.name}</div>
           </div>
-        </foreignObject>
-      </svg>
-    </>
+        </div>
+      </foreignObject>
+    </svg>
   );
 }

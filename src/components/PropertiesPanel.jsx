@@ -1,19 +1,30 @@
 import React from "react";
-import { Input } from "@douyinfe/semi-ui";
 
 export default function PropertiesPanel({ selectedBox, onUpdateBox }) {
-  if (!selectedBox) return <div className="properties-panel">Select a box to see properties</div>;
+  const handleNameChange = (e) => {
+    const updatedName = e.target.value;
+    onUpdateBox(selectedBox.id, {
+      ...selectedBox,
+      name: updatedName,
+    });
+  };
+
+  if (!selectedBox) {
+    return <div className="properties-panel">No box selected</div>;
+  }
 
   return (
     <div className="properties-panel">
       <h3>Properties</h3>
       <div>
         <label>Name:</label>
-        <Input
+        <input
+          type="text"
           value={selectedBox.name}
-          onChange={(value) => onUpdateBox(selectedBox.id, { name: value })}
+          onChange={handleNameChange}
         />
       </div>
+      {/* Other properties can be added here */}
     </div>
   );
 }

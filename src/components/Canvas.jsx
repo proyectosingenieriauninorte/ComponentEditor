@@ -2,11 +2,14 @@ import React from "react";
 import Box from "./Box";
 import Line from "./Line";
 
-
-export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox, updateBoxPosition }) {
-  const handleClick = () => {
-    if (selectedTool === "box" && boxes.length === 0) { // Ensures only one box can be added
-      addBox();
+export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox, updateBoxPosition, deleteBox }) {
+  const handleClick = (e) => {
+    if (selectedTool === "box") {
+      const canvasRect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - canvasRect.left;  // Calculate x relative to canvas
+      const y = e.clientY - canvasRect.top;   // Calculate y relative to canvas
+      console.log(`Canvas clicked at: (${x}, ${y})`);  // Debugging log
+      addBox(x, y);  // Pass the x and y coordinates to addBox
     }
   };
 
@@ -15,9 +18,10 @@ export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox
       {boxes.map((box) => (
         <Box
           key={box.id}
-          data={box}
-          onPointerDown={() => onSelectBox(box.id)}
-          updateBoxPosition={updateBoxPosition}  // Passed correctly
+          boxData={box}
+          onPointerDown={onSelectBox}
+          updateBoxPosition={updateBoxPosition}
+          deleteBox={deleteBox}
         />
       ))}
       {lines.map((line) => (
@@ -26,4 +30,3 @@ export default function Canvas({ selectedTool, onSelectBox, boxes, lines, addBox
     </div>
   );
 }
-

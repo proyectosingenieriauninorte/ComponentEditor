@@ -1,35 +1,51 @@
 import { useState } from "react";
 
-// useCanvas custom hook
 export function useCanvas() {
   const [boxes, setBoxes] = useState([]);
-  const [lines, setLines] = useState([]);
 
-  // Function to add a new box
-  const addBox = () => {
-    if (boxes.length === 0) {
-      const newBox = {
-        id: boxes.length + 1,
-        name: `Box ${boxes.length + 1}`,
-        x: 800,
-        y: 200,
-      };
-      setBoxes([...boxes, newBox]);
+  const addBox = (x, y) => {
+    const newBox = {
+      id: boxes.length + 1,
+      name: `Box ${boxes.length + 1}`,
+      x: x || 100,  // Ensure that x is set, with a fallback to 100
+      y: y || 100,  // Ensure that y is set, with a fallback to 100
+      color: '#f00',
+      selected: false,
+    };
+    setBoxes([...boxes, newBox]);
+    console.log(`Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
+  };
+
+  const updateBoxPosition = (id, x, y) => {
+    if (typeof x === 'number' && typeof y === 'number') {
+      setBoxes((prevBoxes) =>
+        prevBoxes.map((box) =>
+          box.id === id ? { ...box, x: x, y: y } : box
+        )
+      );
+      console.log(`Updated Box Position: ID ${id}, New Position: (${x}, ${y})`);
+    } else {
+      console.error('Invalid position values:', x, y);
     }
   };
 
-  // Function to update the position of a box
-  const updateBoxPosition = (id, x, y) => {
-    setBoxes((prev) =>
-      prev.map((box) => (box.id === id ? { ...box, x, y } : box))
+  const updateBox = (id, updatedProperties) => {
+    setBoxes((prevBoxes) =>
+      prevBoxes.map((box) =>
+        box.id === id ? { ...box, ...updatedProperties } : box
+      )
     );
-    console.log(`updateBoxPosition -> (${x}, ${y})`); // Debug message
+  };
+
+  const deleteBox = (id) => {
+    setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 
   return {
     boxes,
-    lines,
     addBox,
     updateBoxPosition,
+    updateBox,
+    deleteBox,
   };
 }
