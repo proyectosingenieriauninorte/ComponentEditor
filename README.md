@@ -76,3 +76,34 @@ Hook -> App: Box deleted
 App -> Canvas: Remove box from canvas
 @enduml
 ```
+
+### Create Line
+```plantuml
+@startuml
+actor User
+participant Toolbar
+participant App as "App.js"
+participant Canvas
+participant Box
+participant Hook as "useCanvas"
+participant Line as "Line.jsx"
+
+User -> Toolbar: Select line tool
+Toolbar -> App: Notify tool selection
+App -> Canvas: Set selectedTool to "line"
+
+User -> Box: Click on first box
+Box -> Canvas: Notify box selection
+Canvas -> App: Set lineStartBoxId(firstBoxId)
+App -> Hook: Store startBoxId
+
+User -> Box: Click on second box
+Box -> Canvas: Notify box selection
+Canvas -> App: Set lineEndBoxId(secondBoxId)
+App -> Hook: addLine(startBoxId, secondBoxId)
+Hook -> App: Line created between boxes
+App -> Canvas: Trigger line rendering
+Canvas -> Line: Render line between boxes
+Line -> Canvas: Line drawn on canvas
+@enduml
+```
