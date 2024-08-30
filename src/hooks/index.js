@@ -4,6 +4,7 @@ export function useCanvas() {
   const [boxes, setBoxes] = useState([]);
 
   const addBox = (x, y) => {
+    console.log(`Hook Adding Box at: (${x}, ${y})`);  // Debugging log
     const newBox = {
       id: boxes.length + 1,
       name: `Box ${boxes.length + 1}`,
@@ -13,7 +14,7 @@ export function useCanvas() {
       selected: false,
     };
     setBoxes([...boxes, newBox]);
-    console.log(`Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
+    console.log(`Hook Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
   };
 
   const updateBoxPosition = (id, x, y) => {
@@ -38,6 +39,7 @@ export function useCanvas() {
   };
 
   const deleteBox = (id) => {
+    console.log(`Hook Deleting Box with ID: ${id}`);  // Debug
     setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 
