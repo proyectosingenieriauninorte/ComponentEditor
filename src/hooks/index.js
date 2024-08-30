@@ -39,6 +39,7 @@ export function useCanvas() {
   };
 
   const deleteBox = (id) => {
+    console.log(`Hook Deleting Box with ID: ${id}`);  // Debug
     setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 

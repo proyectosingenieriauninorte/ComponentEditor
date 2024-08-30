@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Box from "./Box";
 import Line from "./Line";
 
-export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox }) {
+export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox: deleteBoxCallback }) {
+  const [selectedBoxId, setSelectedBoxId] = useState(null);
+
   const handleClick = (e) => {
     console.log(`Canvas clicked with tool: ${selectedTool}`);  // Debugging log
     if (selectedTool === "box") {
@@ -14,15 +16,41 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
     }
   };
 
+  const handleBoxClick = (boxId) => {
+    setSelectedBoxId(boxId);
+    onSelectBox(boxId);
+  }
+
+
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      console.log(`Key pressed: ${e.key}`);  // Debugging
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedBoxId !== null) {
+        deleteBoxCallback(selectedBoxId);
+        setSelectedBoxId(null);  // Deselect the box after deletion
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [selectedBoxId, deleteBoxCallback]);
+
+
+
+
+
   return (
     <div className="canvas" onClick={handleClick}>
       {boxes.map((box) => (
         <Box
           key={box.id}
           boxData={box}
-          onPointerDown={onSelectBox}
+          onPointerDown={handleBoxClick}
           updateBoxPosition={updateBoxPosition}
-          deleteBox={deleteBox}
+          deleteBox={deleteBoxCallback}
         />
       ))}
       {lines.map((line) => (

@@ -7,7 +7,7 @@ import { useCanvas } from "./hooks";  // Import from index.js
 function App() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, updateBox } = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition, updateBox , deleteBox} = useCanvas();
 
   const handleSelectTool = (tool) => {
     setSelectedTool(tool);
@@ -30,6 +30,12 @@ function App() {
     updateBox(id, updatedProperties);
   };
 
+  const handleDeleteBox = (id) => {
+    console.log(`App.js Deleting box with ID: ${id}`);
+    setSelectedBoxId(null);
+    deleteBox(id);
+  }
+
   const selectedBox = boxes.find((box) => box.id === selectedBoxId);
 
   return (
@@ -47,6 +53,7 @@ function App() {
           addBox={handleAddBox}  // Use handleAddBox to reset the tool after adding
           updateBoxPosition={updateBoxPosition}
           onSelectBox={handleSelectBox}
+          deleteBox={handleDeleteBox}
         />
       </div>
     </div>
