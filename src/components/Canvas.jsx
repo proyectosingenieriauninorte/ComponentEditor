@@ -4,6 +4,7 @@ import Line from "./Line";
 
 export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox: deleteBoxCallback }) {
   const [selectedBoxId, setSelectedBoxId] = useState(null);
+  const [lineStartBoxId, setLineStartBoxId] = useState(null);
 
   const handleClick = (e) => {
     console.log(`Canvas clicked with tool: ${selectedTool}`);  // Debugging log
@@ -18,7 +19,16 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
 
   const handleBoxClick = (boxId) => {
     setSelectedBoxId(boxId);
-    onSelectBox(boxId);
+    if (selectedTool === "line") {
+      if (lineStartBoxId === null) {
+        setLineStartBoxId(boxId);
+      } else {
+        console.log(`Creating line between boxes: ${lineStartBoxId} and ${boxId}`);  // Debugging log
+        setLineStartBoxId(null);
+      }
+    } else {
+      onSelectBox(boxId);
+    } 
   }
 
 
