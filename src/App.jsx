@@ -8,7 +8,7 @@ import Modes from "./modes";
 function App() {
   const [selectedTool, setSelectedTool] = useState(Modes.SELECT);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, updateBox , deleteBox, addLine} = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition, updateBox, deleteBox, addLine } = useCanvas();
 
   const handleSelectTool = (tool) => {
     console.log(`App.js Selected Tool: ${tool}`);
@@ -20,10 +20,10 @@ function App() {
     setSelectedBoxId(id);
   };
 
-  const handleAddBox = (x,y) => {
-    if (selectedTool === Modes.NEW_BOX ) {
+  const handleAddBox = (x, y) => {
+    if (selectedTool === Modes.NEW_BOX) {
       console.log(`App.js Adding box at: (${x}, ${y})`);
-      addBox(x,y);
+      addBox(x, y);
       setSelectedTool(Modes.SELECT);  // Reset tool after adding a box
     }
   };
@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Toolbar onSelectTool={handleSelectTool} />
+      <Toolbar onSelectTool={handleSelectTool} selectedTool={selectedTool} />
       <div className="main-layout">
         <PropertiesPanel
           selectedBox={selectedBox}
