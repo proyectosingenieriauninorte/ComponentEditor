@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Box from "./Box";
 import Line from "./Line";
+import Modes from "../modes";
 
 export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox: deleteBoxCallback, addLine }) {
   const [selectedBoxId, setSelectedBoxId] = useState(null);
@@ -8,7 +9,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
 
   const handleClick = (e) => {
     console.log(`Canvas clicked with tool: ${selectedTool}`);  // Debugging log
-    if (selectedTool === "box") {
+    if (selectedTool === Modes.NEW_BOX) {
       const canvasRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - canvasRect.left;  // Calculate x relative to canvas
       const y = e.clientY - canvasRect.top;   // Calculate y relative to canvas
@@ -19,7 +20,9 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
 
   const handleBoxClick = (boxId) => {
     setSelectedBoxId(boxId);
-    if (selectedTool === "line") {
+    if (selectedTool === Modes.SELECT) {
+      onSelectBox(boxId);
+    } else if (selectedTool === Modes.NEW_LINE) {
       if (lineStartBoxId === null) {
         setLineStartBoxId(boxId);
       } else {
@@ -27,10 +30,13 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
         setLineStartBoxId(null);
         addLine(lineStartBoxId, boxId);
       }
-    } else {
-      onSelectBox(boxId);
-    } 
+    }  
   }
+
+  const handleHookClick = (boxId, hookPointId) => {
+    console.log(`canvas -> Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
+   // handleBoxClick(boxId, hookPointId);
+  };
 
 
 
@@ -62,6 +68,8 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
           onPointerDown={handleBoxClick}
           updateBoxPosition={updateBoxPosition}
           deleteBox={deleteBoxCallback}
+          selectedTool={selectedTool}
+
         />
       ))}
       {lines.map((line) => (

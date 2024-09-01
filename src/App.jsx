@@ -3,13 +3,15 @@ import Canvas from "./components/Canvas";
 import Toolbar from "./components/Toolbar";
 import PropertiesPanel from "./components/PropertiesPanel";
 import { useCanvas } from "./hooks";  // Import from index.js
+import Modes from "./modes";
 
 function App() {
-  const [selectedTool, setSelectedTool] = useState(null);
+  const [selectedTool, setSelectedTool] = useState(Modes.SELECT);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const { boxes, lines, addBox, updateBoxPosition, updateBox , deleteBox, addLine} = useCanvas();
 
   const handleSelectTool = (tool) => {
+    console.log(`App.js Selected Tool: ${tool}`);
     setSelectedTool(tool);
   };
 
@@ -19,10 +21,10 @@ function App() {
   };
 
   const handleAddBox = (x,y) => {
-    if (selectedTool === "box") {
+    if (selectedTool === Modes.NEW_BOX ) {
       console.log(`App.js Adding box at: (${x}, ${y})`);
       addBox(x,y);
-      setSelectedTool(null);  // Reset tool after adding a box
+      setSelectedTool(Modes.SELECT);  // Reset tool after adding a box
     }
   };
 
