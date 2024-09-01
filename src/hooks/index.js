@@ -5,7 +5,7 @@ export function useCanvas() {
   const [lines, setLines] = useState([]);
 
   const addBox = (x, y) => {
-    console.log(`Hook Adding Box at: (${x}, ${y})`);  // Debugging log
+    //console.log(`Hook Adding Box at: (${x}, ${y})`);  // Debugging log
     const newBox = {
       id: boxes.length + 1,
       name: `Box ${boxes.length + 1}`,

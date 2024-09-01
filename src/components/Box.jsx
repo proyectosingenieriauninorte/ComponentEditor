@@ -10,6 +10,7 @@ export default function Box(props) {
     updateBoxPosition,
     deleteBox,
     selectedTool,
+    onHookClick, // Ensure this prop is passed
   } = props;
 
   const hookPoints = [
@@ -34,7 +35,7 @@ export default function Box(props) {
   };
 
   const handleMouseMove = (e) => {
-    if (dragging) {
+    if (dragging && selectedTool === Modes.SELECT) {
       const newX = e.clientX - offset.x;
       const newY = e.clientY - offset.y;
       updateBoxPosition(boxData.id, newX, newY);
@@ -42,7 +43,9 @@ export default function Box(props) {
   };
 
   const handleMouseUp = () => {
-    setDragging(false);
+    if (dragging) {
+     setDragging(false);
+    }
   };
 
   useEffect(() => {
@@ -58,7 +61,7 @@ export default function Box(props) {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [dragging]);
+  }, [dragging,selectedTool]);
 
   return (
     <svg
@@ -67,7 +70,7 @@ export default function Box(props) {
       width="150"
       height="50"
       onMouseDown={handleMouseDown}
-      style={{ position: 'absolute', left: boxData.x, top: boxData.y, cursor: selectedTool === Modes.SELECT ? 'move' : selectedTool === Modes.NEW_LINE ? 'crosshair' : 'default' }}
+      style={{ position: 'absolute', left: boxData.x, top: boxData.y, cursor: selectedTool === Modes.SELECT ? 'move' : 'default' }}
     >
       <foreignObject
         width="150"
@@ -93,6 +96,7 @@ export default function Box(props) {
             e.stopPropagation(); // Prevent triggering box click
             onHookClick(id, point.id);
           }}
+          style={{ cursor: 'crosshair' }} // Cursor changes only over hook points
         />
       ))}
 

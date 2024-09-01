@@ -8,17 +8,17 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
 
   const handleClick = (e) => {
-    console.log(`Canvas clicked with tool: ${selectedTool}`);  // Debugging log
+    //console.log(`Canvas clicked with tool: ${selectedTool}`);  // Debugging log
     if (selectedTool === Modes.NEW_BOX) {
       const canvasRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - canvasRect.left;  // Calculate x relative to canvas
       const y = e.clientY - canvasRect.top;   // Calculate y relative to canvas
-      console.log(`Canvas clicked at: (${x}, ${y}), calling callback`);  // Debugging log
+      //console.log(`Canvas clicked at: (${x}, ${y}), calling callback`);  // Debugging log
       addBoxCallback(x, y);  // Pass the x and y coordinates to addBox
     }
   };
 
-  const handleBoxClick = (boxId) => {
+/*   const handleBoxClick = (boxId) => {
     setSelectedBoxId(boxId);
     if (selectedTool === Modes.SELECT) {
       onSelectBox(boxId);
@@ -31,11 +31,25 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
         addLine(lineStartBoxId, boxId);
       }
     }  
-  }
+  } */
 
+    const handleBoxClick = (boxId) => {
+      if (selectedTool === Modes.SELECT) {
+        console.log(`Hook Box clicked: ${boxId}`);  // Debugging log
+        onSelectBox(boxId);
+      }
+    };
+    
   const handleHookClick = (boxId, hookPointId) => {
-    console.log(`canvas -> Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
-   // handleBoxClick(boxId, hookPointId);
+    if (selectedTool === Modes.NEW_LINE) {
+      console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
+      if (lineStart) {
+        onAddLine(lineStart.boxId, lineStart.hookPointId, boxId, hookPointId);
+        setLineStart(null);
+      } else {
+        setLineStart({ boxId, hookPointId });
+      }
+    }
   };
 
 
@@ -69,6 +83,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
           updateBoxPosition={updateBoxPosition}
           deleteBox={deleteBoxCallback}
           selectedTool={selectedTool}
+          onHookClick={handleHookClick}
 
         />
       ))}
