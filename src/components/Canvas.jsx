@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Box from "./Box";
 import Line from "./Line";
 
-export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox: deleteBoxCallback }) {
+export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = [], addBox: addBoxCallback, updateBoxPosition, deleteBox: deleteBoxCallback, addLine }) {
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
 
@@ -25,6 +25,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
       } else {
         console.log(`Creating line between boxes: ${lineStartBoxId} and ${boxId}`);  // Debugging log
         setLineStartBoxId(null);
+        addLine(lineStartBoxId, boxId);
       }
     } else {
       onSelectBox(boxId);
@@ -64,7 +65,7 @@ export default function Canvas({ selectedTool, onSelectBox, boxes = [], lines = 
         />
       ))}
       {lines.map((line) => (
-        <Line key={line.id} data={line} />
+        <Line key={line.id} data={line} boxes={boxes}/>
       ))}
     </div>
   );

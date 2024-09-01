@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export function useCanvas() {
   const [boxes, setBoxes] = useState([]);
+  const [lines, setLines] = useState([]);
 
   const addBox = (x, y) => {
     console.log(`Hook Adding Box at: (${x}, ${y})`);  // Debugging log
@@ -43,11 +44,23 @@ export function useCanvas() {
     setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 
+  const addLine = (startBoxId, endBoxId) => {
+    console.log(`Hook Adding Line between boxes: ${startBoxId} and ${endBoxId}`);  // Debug
+    const newLine = {
+      id: lines.length + 1,
+      startBoxId,
+      endBoxId,
+    };
+    setLines([...lines, newLine]);
+  };
+
   return {
     boxes,
+    lines,
     addBox,
     updateBoxPosition,
     updateBox,
     deleteBox,
+    addLine,
   };
 }

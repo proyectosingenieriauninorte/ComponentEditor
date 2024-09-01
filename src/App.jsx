@@ -7,7 +7,7 @@ import { useCanvas } from "./hooks";  // Import from index.js
 function App() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, updateBox , deleteBox} = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition, updateBox , deleteBox, addLine} = useCanvas();
 
   const handleSelectTool = (tool) => {
     setSelectedTool(tool);
@@ -36,6 +36,13 @@ function App() {
     deleteBox(id);
   }
 
+  const handleAddLine = (startBoxId, endBoxId) => {
+    console.log(`App.js Adding line between boxes: ${startBoxId} and ${endBoxId}`);
+    if (startBoxId && endBoxId && startBoxId !== endBoxId) {
+      addLine(startBoxId, endBoxId);
+    }
+  }
+
   const selectedBox = boxes.find((box) => box.id === selectedBoxId);
 
   return (
@@ -54,6 +61,7 @@ function App() {
           updateBoxPosition={updateBoxPosition}
           onSelectBox={handleSelectBox}
           deleteBox={handleDeleteBox}
+          addLine={handleAddLine}
         />
       </div>
     </div>
