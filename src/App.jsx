@@ -38,10 +38,13 @@ function App() {
     deleteBox(id);
   }
 
-  const handleAddLine = (startBoxId, endBoxId) => {
-    console.log(`App.js Adding line between boxes: ${startBoxId} and ${endBoxId}`);
-    if (startBoxId && endBoxId && startBoxId !== endBoxId) {
-      addLine(startBoxId, endBoxId);
+  const handleAddLine = (startBoxId, endBoxId, startHook, endHook) => {
+    console.log(`App.js Adding line between boxes: ${startBoxId} and ${endBoxId} from ${startHook} to ${endHook}`);
+    if (startBoxId && endBoxId && startHook && endHook && startBoxId !== endBoxId) {
+      addLine({ startBoxId, endBoxId, startHook, endHook });
+      setSelectedTool(Modes.SELECT);  // Reset tool after adding a box
+    } else {
+      console.error("App.js Invalid parameters for adding a line", { startBoxId, endBoxId, startHook, endHook });
     }
   }
 
@@ -63,7 +66,7 @@ function App() {
           updateBoxPosition={updateBoxPosition}
           onSelectBox={handleSelectBox}
           deleteBox={handleDeleteBox}
-          addLine={handleAddLine}
+          onAddLine={handleAddLine}
         />
       </div>
     </div>

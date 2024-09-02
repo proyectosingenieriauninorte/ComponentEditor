@@ -94,7 +94,7 @@ export default function Box(props) {
           fill="blue"
           onClick={(e) => {
             e.stopPropagation(); // Prevent triggering box click
-            onHookClick(id, point.id);
+            onHookClick(boxData.id, point.id);
           }}
           style={{ cursor: 'crosshair' }} // Cursor changes only over hook points
         />

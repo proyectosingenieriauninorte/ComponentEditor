@@ -25,7 +25,7 @@ export function useCanvas() {
           box.id === id ? { ...box, x: x, y: y } : box
         )
       );
-      console.log(`Updated Box Position: ID ${id}, New Position: (${x}, ${y})`);
+      //console.log(`Updated Box Position: ID ${id}, New Position: (${x}, ${y})`);
     } else {
       console.error('Invalid position values:', x, y);
     }
@@ -44,14 +44,23 @@ export function useCanvas() {
     setBoxes((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 
-  const addLine = (startBoxId, endBoxId) => {
-    console.log(`Hook Adding Line between boxes: ${startBoxId} and ${endBoxId}`);  // Debug
-    const newLine = {
-      id: lines.length + 1,
-      startBoxId,
-      endBoxId,
-    };
-    setLines([...lines, newLine]);
+  const addLine = ({ startBoxId, endBoxId, startHook, endHook }) => {
+    console.log(`Hook Adding Line between boxes: ${startBoxId} and ${endBoxId} from ${startHook} to ${endHook}`);  // Debug
+  
+    // Ensure that all required parameters are provided and valid
+    if (startBoxId && endBoxId && startHook && endHook && startBoxId !== endBoxId) {
+      const newLine = {
+        id: lines.length + 1,
+        startBoxId,
+        endBoxId,
+        startHook,
+        endHook,
+      };
+      setLines([...lines, newLine]);
+      console.log(`Line Added: ${newLine.id} between boxes: ${startBoxId} and ${endBoxId} from ${startHook} to ${endHook}`);
+    } else {
+      console.error("Invalid parameters for adding a line", { startBoxId, endBoxId, startHook, endHook });
+    }
   };
 
   return {

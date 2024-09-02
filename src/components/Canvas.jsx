@@ -10,12 +10,13 @@ export default function Canvas({
   addBox: addBoxCallback, 
   updateBoxPosition, 
   deleteBox: deleteBoxCallback, 
-  addLine }) {
+  onAddLine }) {
 
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
   const [tempBox, setTempBox] = useState(null);
   const [canvasRect, setCanvasRect] = useState(null);
+  const [lineStart, setLineStart] = useState(null); 
 
   const handleMouseEnter = (e) => {
     if (selectedTool === Modes.NEW_BOX && !tempBox) {
@@ -62,17 +63,17 @@ export default function Canvas({
   
   
     
-  const handleHookClick = (boxId, hookPointId) => {
-    if (selectedTool === Modes.NEW_LINE) {
-      console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
-      if (lineStart) {
-        onAddLine(lineStart.boxId, lineStart.hookPointId, boxId, hookPointId);
-        setLineStart(null);
-      } else {
-        setLineStart({ boxId, hookPointId });
+    const handleHookClick = (boxId, hookPointId) => {
+      if (selectedTool === Modes.NEW_LINE) {
+        console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
+        if (lineStart) {
+          onAddLine(lineStart.boxId, boxId, lineStart.hookPointId, hookPointId); // Pass both box IDs and hook points
+          setLineStart(null);
+        } else {
+          setLineStart({ boxId, hookPointId });
+        }
       }
-    }
-  };
+    };
 
 
 
