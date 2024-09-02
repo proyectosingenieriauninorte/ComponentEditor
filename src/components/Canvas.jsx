@@ -10,7 +10,8 @@ export default function Canvas({
   addBox: addBoxCallback, 
   updateBoxPosition, 
   deleteBox: deleteBoxCallback, 
-  onAddLine }) {
+  onAddLine,
+  clearSelection }) {
 
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
@@ -44,9 +45,17 @@ export default function Canvas({
     }
   };
 
-    const handleBoxClick = (boxId) => {
+  const handleCanvasClick = (e) => {
+    e.preventDefault();
+    console.log("Canvas clicked");  // Debugging log
+    clearSelection(); // Clear the selection when the canvas is clicked
+  };
+
+    const handleBoxClick = (boxId,e) => {
+      e.stopPropagation(); // Stop the event from propagating to the canvas
       if (selectedTool === Modes.SELECT) {
         console.log(`Hook Box clicked: ${boxId}`);  // Debugging log
+        setSelectedBoxId(boxId);
         onSelectBox(boxId);
       }
     };
@@ -111,6 +120,7 @@ export default function Canvas({
     <div
      className="canvas"
      onMouseEnter={handleMouseEnter}
+     onClick={handleCanvasClick}
      style={{ position: "relative", width: "100%", height: "100%" }}
      >
       {boxes.map((box) => (
@@ -122,7 +132,6 @@ export default function Canvas({
           deleteBox={deleteBoxCallback}
           selectedTool={selectedTool}
           onHookClick={handleHookClick}
-
         />
       ))}
       {lines.map((line) => (

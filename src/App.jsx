@@ -8,16 +8,17 @@ import Modes from "./modes";
 function App() {
   const [selectedTool, setSelectedTool] = useState(Modes.SELECT);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, updateBox, deleteBox, addLine } = useCanvas();
+  const { boxes, lines, addBox, updateBoxPosition, updateBox, deleteBox, addLine, selectBox } = useCanvas();
 
   const handleSelectTool = (tool) => {
     console.log(`App.js Selected Tool: ${tool}`);
     setSelectedTool(tool);
+    selectBox(null); // Clear the selection when changing modes
   };
 
   const handleSelectBox = (id) => {
     console.log(`App.js Selected Box ID: ${id}`);
-    setSelectedBoxId(id);
+    selectBox(id);
   };
 
   const handleAddBox = (x, y) => {
@@ -50,6 +51,11 @@ function App() {
 
   const selectedBox = boxes.find((box) => box.id === selectedBoxId);
 
+  const clearSelection = () => {
+    console.log(`App.js Clearing selection ${selectedBoxId}`);
+    //selectBox(null);
+  };
+
   return (
     <div className="app-container">
       <Toolbar onSelectTool={handleSelectTool} selectedTool={selectedTool} />
@@ -67,6 +73,7 @@ function App() {
           onSelectBox={handleSelectBox}
           deleteBox={handleDeleteBox}
           onAddLine={handleAddLine}
+          clearSelection={clearSelection}
         />
       </div>
     </div>

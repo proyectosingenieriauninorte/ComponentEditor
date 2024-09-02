@@ -30,7 +30,7 @@ export default function Box(props) {
         x: e.clientX - boxData.x,
         y: e.clientY - boxData.y,
       });
-      if (onPointerDown) onPointerDown(boxData.id); // Notify parent that this box is selected
+      if (onPointerDown) onPointerDown(boxData.id,e); // Notify parent that this box is selected
     }
   };
 
@@ -69,7 +69,7 @@ export default function Box(props) {
       y={boxData.y}
       width="150"
       height="50"
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => handleMouseDown(e, boxData.id)}
       style={{ position: 'absolute', left: boxData.x, top: boxData.y, cursor: selectedTool === Modes.SELECT ? 'move' : 'default' }}
     >
       <foreignObject
@@ -84,6 +84,15 @@ export default function Box(props) {
           </div>
         </div>
       </foreignObject>
+
+      {boxData.selected && (
+        <>
+          <rect x={0} y={0} width={8} height={8} fill="blue" className="corner top-left" />
+          <rect x={142} y={0} width={8} height={8} fill="blue" className="corner top-right" />
+          <rect x={0} y={42} width={8} height={8} fill="blue" className="corner bottom-left" />
+          <rect x={142} y={42} width={8} height={8} fill="blue" className="corner bottom-right" />
+        </>
+      )}
 
       {selectedTool === Modes.NEW_LINE && hookPoints.map(point => (
         <circle

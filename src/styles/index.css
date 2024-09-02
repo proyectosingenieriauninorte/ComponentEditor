@@ -39,6 +39,72 @@
   border-style: solid;
 }
 
+/* Corner squares for selected box */
+.box-container.selected::before,
+.box-container.selected::after,
+.box-container .corner {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: blue;
+}
+
+.box-container .corner.top-left {
+  top: -4px;
+  left: -4px;
+  cursor: nwse-resize;
+}
+
+.box-container .corner.top-right {
+  top: -4px;
+  right: -4px;
+  cursor: nesw-resize;
+}
+
+.box-container .corner.bottom-left {
+  bottom: -4px;
+  left: -4px;
+  cursor: nesw-resize;
+}
+
+.box-container .corner.bottom-right {
+  bottom: -4px;
+  right: -4px;
+  cursor: nwse-resize;
+}
+
+/* Hook points styling */
+.hook-points .hook {
+  width: 10px;
+  height: 10px;
+  background-color: blue;
+  position: absolute;
+}
+
+.hook-points .hook.top {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hook-points .hook.right {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hook-points .hook.bottom {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hook-points .hook.left {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
 .app-container {
   display: flex;

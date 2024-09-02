@@ -62,6 +62,14 @@ export function useCanvas() {
       console.error("Invalid parameters for adding a line", { startBoxId, endBoxId, startHook, endHook });
     }
   };
+
+  const selectBox = (id) => {
+    setBoxes(prevBoxes =>
+      prevBoxes.map(box =>
+        box.id === id ? { ...box, selected: true } : { ...box, selected: false }
+      )
+    );
+  };
   
 
   return {
@@ -72,5 +80,6 @@ export function useCanvas() {
     updateBox,
     deleteBox,
     addLine,
+    selectBox,
   };
 }
