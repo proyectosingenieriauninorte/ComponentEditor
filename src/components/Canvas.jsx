@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Box from "./Box";
 import Line from "./Line";
 import Modes from "../modes";
 
-export default function Canvas({ 
-  selectedTool, onSelectBox, 
+export default function Canvas({
+  selectedTool, onSelectBox,
   boxes = [],
-  lines = [], 
-  addBox: addBoxCallback, 
-  updateBoxPosition, 
-  deleteBox: deleteBoxCallback, 
+  lines = [],
+  addBox: addBoxCallback,
+  updateBoxPosition,
+  deleteBox: deleteBoxCallback,
   onAddLine,
   clearSelection }) {
   const canvasRef = useRef(null); // Create a ref for the canvas
@@ -18,7 +18,7 @@ export default function Canvas({
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
   const [tempBox, setTempBox] = useState(null);
   const [canvasRect, setCanvasRect] = useState(null);
-  const [lineStart, setLineStart] = useState(null); 
+  const [lineStart, setLineStart] = useState(null);
 
   const handleMouseEnter = (e) => {
     if (selectedTool === Modes.NEW_BOX && !tempBox) {
@@ -40,8 +40,12 @@ export default function Canvas({
 
   const handleMouseMove = (e) => {
     if (tempBox && canvasRect) {
-      const x = e.clientX - canvasRect.left;
-      const y = e.clientY - canvasRect.top;
+      let x = e.clientX - canvasRect.left;
+      let y = e.clientY - canvasRect.top;
+      x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
+      y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
+  
+
       setTempBox({ ...tempBox, x, y });
     }
   };
@@ -52,44 +56,50 @@ export default function Canvas({
     clearSelection(); // Clear the selection when the canvas is clicked
   };
 
-    const handleBoxClick = (boxId,e) => {
-      e.stopPropagation(); // Stop the event from propagating to the canvas
-      if (selectedTool === Modes.SELECT) {
-        console.log(`Hook Box clicked: ${boxId}`);  // Debugging log
-        setSelectedBoxId(boxId);
-        onSelectBox(boxId);
-      }
-    };
+  const handleBoxClick = (boxId, e) => {
+    e.stopPropagation(); // Stop the event from propagating to the canvas
+    if (selectedTool === Modes.SELECT) {
+      console.log(`Hook Box clicked: ${boxId}`);  // Debugging log
+      setSelectedBoxId(boxId);
+      onSelectBox(boxId);
+    }
+  };
 
 
-    const handleMouseUp = (e) => {
-      if (tempBox && canvasRect) {
-        const x = e.clientX - canvasRect.left;
-        const y = e.clientY - canvasRect.top;
-        addBoxCallback(x, y); // Finalize the box position
-        setTempBox(null); // Clear the temporary box after placing
+  const handleMouseUp = (e) => {
+    if (tempBox && canvasRect) {
+      let x = e.clientX - canvasRect.left;
+      let y = e.clientY - canvasRect.top;
+
+      // Ensure tempBox stays within canvas boundaries
+      x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
+      y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
+
+
+      addBoxCallback(x, y); // Finalize the box position
+      setTempBox(null); // Clear the temporary box after placing
+    }
+  };
+
+
+
+  const handleHookClick = (boxId, hookPointId) => {
+    if (selectedTool === Modes.NEW_LINE) {
+      console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
+      if (lineStart) {
+        onAddLine(lineStart.boxId, boxId, lineStart.hookPointId, hookPointId); // Pass both box IDs and hook points
+        setLineStart(null);
+      } else {
+        setLineStart({ boxId, hookPointId });
       }
-    };
-  
-  
-    
-    const handleHookClick = (boxId, hookPointId) => {
-      if (selectedTool === Modes.NEW_LINE) {
-        console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
-        if (lineStart) {
-          onAddLine(lineStart.boxId, boxId, lineStart.hookPointId, hookPointId); // Pass both box IDs and hook points
-          setLineStart(null);
-        } else {
-          setLineStart({ boxId, hookPointId });
-        }
-      }
-    };
+    }
+  };
 
 
 
   useEffect(() => {
 
-    if (tempBox ) {
+    if (tempBox) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     } else {
@@ -115,7 +125,7 @@ export default function Canvas({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     }
-  }, [selectedBoxId, deleteBoxCallback, tempBox,canvasRef.current]);
+  }, [selectedBoxId, deleteBoxCallback, tempBox, canvasRef.current]);
 
 
 
@@ -123,12 +133,12 @@ export default function Canvas({
 
   return (
     <div
-    ref={canvasRef} // Assign the ref to the canvas
-     className="canvas"
-     onMouseEnter={handleMouseEnter}
-     onClick={handleCanvasClick}
-     style={{ position: "relative", width: "100%", height: "100%" }}
-     >
+      ref={canvasRef} // Assign the ref to the canvas
+      className="canvas"
+      onMouseEnter={handleMouseEnter}
+      onClick={handleCanvasClick}
+      style={{ position: "relative", width: "100%", height: "100%" }}
+    >
       {boxes.map((box) => (
         <Box
           key={box.id}
@@ -143,17 +153,17 @@ export default function Canvas({
         />
       ))}
       {lines.map((line) => (
-        <Line key={line.id} data={line} boxes={boxes}/>
+        <Line key={line.id} data={line} boxes={boxes} />
       ))}
 
-        {tempBox && (
+      {tempBox && (
         <Box
           boxData={tempBox}
           selectedTool={selectedTool}
-          updateBoxPosition={() => {}}
-          onPointerDown={() => {}}
-          onHookClick={() => {}}
-          deleteBox={() => {}}
+          updateBoxPosition={() => { }}
+          onPointerDown={() => { }}
+          onHookClick={() => { }}
+          deleteBox={() => { }}
           canvasWidth={canvasRect ? canvasRect.width : 0}  // Pass the canvas width
           canvasHeight={canvasRect ? canvasRect.height : 0} // Pass the canvas height          
         />
