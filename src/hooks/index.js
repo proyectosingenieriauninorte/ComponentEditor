@@ -48,7 +48,7 @@ export function useCanvas() {
     console.log(`Hook Adding Line between boxes: ${startBoxId} and ${endBoxId} from ${startHook} to ${endHook}`);  // Debug
   
     // Ensure that all required parameters are provided and valid
-    if (startBoxId && endBoxId && startHook && endHook && startBoxId !== endBoxId) {
+    if (startBoxId && endBoxId && startHook && endHook) {
       const newLine = {
         id: lines.length + 1,
         startBoxId,
@@ -62,6 +62,7 @@ export function useCanvas() {
       console.error("Invalid parameters for adding a line", { startBoxId, endBoxId, startHook, endHook });
     }
   };
+  
 
   return {
     boxes,

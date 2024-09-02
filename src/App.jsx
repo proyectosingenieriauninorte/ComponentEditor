@@ -40,7 +40,7 @@ function App() {
 
   const handleAddLine = (startBoxId, endBoxId, startHook, endHook) => {
     console.log(`App.js Adding line between boxes: ${startBoxId} and ${endBoxId} from ${startHook} to ${endHook}`);
-    if (startBoxId && endBoxId && startHook && endHook && startBoxId !== endBoxId) {
+    if (startBoxId && endBoxId && startHook && endHook ) {
       addLine({ startBoxId, endBoxId, startHook, endHook });
       setSelectedTool(Modes.SELECT);  // Reset tool after adding a box
     } else {

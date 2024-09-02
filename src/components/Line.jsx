@@ -27,13 +27,38 @@ export default function Line({ data, boxes }) {
   const endX = endBox.x + hookOffsets[endHook].x;
   const endY = endBox.y + hookOffsets[endHook].y;
 
-  console.log(`Drawing line from (${startX}, ${startY}) to (${endX}, ${endY})`);
+  let pathD = `M ${startX},${startY} `;
+
+  // Add perpendicular segment based on hook point for the start of the line
+  if (startHook === 'top') {
+    pathD += `L ${startX},${startY - 20} `;
+  } else if (startHook === 'bottom') {
+    pathD += `L ${startX},${startY + 20} `;
+  } else if (startHook === 'left') {
+    pathD += `L ${startX - 20},${startY} `;
+  } else if (startHook === 'right') {
+    pathD += `L ${startX + 20},${startY} `;
+  }
+
+  // Add perpendicular segment based on hook point for the end of the line
+  if (endHook === 'top') {
+    pathD += `L ${endX},${endY - 20} `;
+  } else if (endHook === 'bottom') {
+    pathD += `L ${endX},${endY + 20} `;
+  } else if (endHook === 'left') {
+    pathD += `L ${endX - 20},${endY} `;
+  } else if (endHook === 'right') {
+    pathD += `L ${endX + 20},${endY} `;
+  }
+
+  // Connect the perpendicular segments with a straight line
+  pathD += `L ${endX},${endY}`;
 
   return (
     <svg style={{ position: 'absolute', overflow: 'visible' }}>
       <g>
         <path
-          d={`M ${startX},${startY} L ${endX},${endY}`}
+          d={pathD}
           stroke="gray"
           strokeWidth="2"
           fill="none"
