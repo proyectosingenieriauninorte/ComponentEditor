@@ -10,7 +10,9 @@ export default function Box(props) {
     updateBoxPosition,
     deleteBox,
     selectedTool,
-    onHookClick, // Ensure this prop is passed
+    onHookClick, 
+    canvasWidth,  // Pass the canvas width as a prop
+    canvasHeight, // Pass the canvas height as a prop
   } = props;
 
   const hookPoints = [
@@ -38,7 +40,7 @@ export default function Box(props) {
     if (dragging && selectedTool === Modes.SELECT) {
       const newX = e.clientX - offset.x;
       const newY = e.clientY - offset.y;
-      updateBoxPosition(boxData.id, newX, newY);
+      updateBoxPosition(boxData.id, newX, newY, canvasWidth, canvasHeight);
     }
   };
 

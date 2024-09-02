@@ -18,14 +18,19 @@ export function useCanvas() {
     console.log(`Hook Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
   };
 
-  const updateBoxPosition = (id, x, y) => {
+  const updateBoxPosition = (id, x, y, canvasWidth, canvasHeight) => {
     if (typeof x === 'number' && typeof y === 'number') {
       setBoxes((prevBoxes) =>
-        prevBoxes.map((box) =>
-          box.id === id ? { ...box, x: x, y: y } : box
-        )
+        prevBoxes.map((box) => {
+          if (box.id === id) {
+            // Ensure the box stays within the canvas boundaries
+            const newX = Math.max(0, Math.min(x, canvasWidth - 150)); // Assuming box width is 150
+            const newY = Math.max(0, Math.min(y, canvasHeight - 50));  // Assuming box height is 50
+            return { ...box, x: newX, y: newY };
+          }
+          return box;
+        })
       );
-      //console.log(`Updated Box Position: ID ${id}, New Position: (${x}, ${y})`);
     } else {
       console.error('Invalid position values:', x, y);
     }

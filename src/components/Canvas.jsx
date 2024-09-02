@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import Box from "./Box";
 import Line from "./Line";
 import Modes from "../modes";
@@ -12,6 +12,7 @@ export default function Canvas({
   deleteBox: deleteBoxCallback, 
   onAddLine,
   clearSelection }) {
+  const canvasRef = useRef(null); // Create a ref for the canvas
 
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
@@ -96,6 +97,10 @@ export default function Canvas({
       document.removeEventListener("mouseup", handleMouseUp);
     }
 
+    if (canvasRef.current) {
+      setCanvasRect(canvasRef.current.getBoundingClientRect()); // Store the canvas dimensions
+    }
+
     const handleKeyDown = (e) => {
       console.log(`Key pressed: ${e.key}`);  // Debugging
       if ((e.key === 'Delete' || e.key === 'Backspace') && selectedBoxId !== null) {
@@ -110,7 +115,7 @@ export default function Canvas({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     }
-  }, [selectedBoxId, deleteBoxCallback, tempBox]);
+  }, [selectedBoxId, deleteBoxCallback, tempBox,canvasRef.current]);
 
 
 
@@ -118,6 +123,7 @@ export default function Canvas({
 
   return (
     <div
+    ref={canvasRef} // Assign the ref to the canvas
      className="canvas"
      onMouseEnter={handleMouseEnter}
      onClick={handleCanvasClick}
@@ -132,6 +138,8 @@ export default function Canvas({
           deleteBox={deleteBoxCallback}
           selectedTool={selectedTool}
           onHookClick={handleHookClick}
+          canvasWidth={canvasRect ? canvasRect.width : 0}  // Pass the canvas width
+          canvasHeight={canvasRect ? canvasRect.height : 0} // Pass the canvas height          
         />
       ))}
       {lines.map((line) => (
@@ -146,6 +154,8 @@ export default function Canvas({
           onPointerDown={() => {}}
           onHookClick={() => {}}
           deleteBox={() => {}}
+          canvasWidth={canvasRect ? canvasRect.width : 0}  // Pass the canvas width
+          canvasHeight={canvasRect ? canvasRect.height : 0} // Pass the canvas height          
         />
       )}
     </div>
