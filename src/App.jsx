@@ -53,7 +53,7 @@ function App() {
 
   const clearSelection = () => {
     console.log(`App.js Clearing selection ${selectedBoxId}`);
-    //selectBox(null);
+    //selectBox(null);  // TODO: Uncomment this line when fix the issue that allows the canvas to be clicked when a box is clicked  
   };
 
   return (

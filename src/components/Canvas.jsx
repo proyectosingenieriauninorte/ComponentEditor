@@ -117,6 +117,10 @@ export default function Canvas({
         deleteBoxCallback(selectedBoxId);
         setSelectedBoxId(null);  // Deselect the box after deletion
       }
+      if (e.key === 'Escape') {
+        //setLineStart(null); // Cancel line drawing
+        clearSelection(); // Clear the selection
+      }
     }
     window.addEventListener("keydown", handleKeyDown);
 
