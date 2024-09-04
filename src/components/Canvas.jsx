@@ -22,11 +22,10 @@ export default function Canvas({
 
   const handleMouseEnter = (e) => {
     if (selectedTool === Modes.NEW_BOX && !tempBox) {
-      const canvasRect = e.currentTarget.getBoundingClientRect();
       const rect = e.currentTarget.getBoundingClientRect();
       setCanvasRect(rect); // Store the bounding rect
-      const x = e.clientX - canvasRect.left;
-      const y = e.clientY - canvasRect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       const newBox = {
         id: "temp", // Temporary ID
         x: x,
@@ -44,8 +43,6 @@ export default function Canvas({
       let y = e.clientY - canvasRect.top;
       x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
       y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
-  
-
       setTempBox({ ...tempBox, x, y });
     }
   };
@@ -65,7 +62,6 @@ export default function Canvas({
     }
   };
 
-
   const handleMouseUp = (e) => {
     if (tempBox && canvasRect) {
       let x = e.clientX - canvasRect.left;
@@ -75,13 +71,10 @@ export default function Canvas({
       x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
       y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
 
-
       addBoxCallback(x, y); // Finalize the box position
       setTempBox(null); // Clear the temporary box after placing
     }
   };
-
-
 
   const handleHookClick = (boxId, hookPointId) => {
     if (selectedTool === Modes.NEW_LINE) {
@@ -95,10 +88,7 @@ export default function Canvas({
     }
   };
 
-
-
   useEffect(() => {
-
     if (tempBox) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
@@ -118,7 +108,6 @@ export default function Canvas({
         setSelectedBoxId(null);  // Deselect the box after deletion
       }
       if (e.key === 'Escape') {
-        //setLineStart(null); // Cancel line drawing
         clearSelection(); // Clear the selection
       }
     }
@@ -129,11 +118,7 @@ export default function Canvas({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     }
-  }, [selectedBoxId, deleteBoxCallback, tempBox, canvasRef.current]);
-
-
-
-
+  }, [selectedBoxId, deleteBoxCallback, tempBox]);
 
   return (
     <div

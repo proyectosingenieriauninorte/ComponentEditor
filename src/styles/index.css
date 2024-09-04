@@ -37,38 +37,36 @@
 .box-container.selected {
   border: 2px solid blue;
   border-style: solid;
+  position: relative;
 }
 
 /* Corner squares for selected box */
-.box-container.selected::before,
-.box-container.selected::after,
-.box-container .corner {
-  content: "";
-  position: absolute;
+.box-container.selected .corner {
   width: 8px;
   height: 8px;
   background-color: blue;
+  position: absolute;
 }
 
-.box-container .corner.top-left {
+.box-container.selected .corner.top-left {
   top: -4px;
   left: -4px;
   cursor: nwse-resize;
 }
 
-.box-container .corner.top-right {
+.box-container.selected .corner.top-right {
   top: -4px;
   right: -4px;
   cursor: nesw-resize;
 }
 
-.box-container .corner.bottom-left {
+.box-container.selected .corner.bottom-left {
   bottom: -4px;
   left: -4px;
   cursor: nesw-resize;
 }
 
-.box-container .corner.bottom-right {
+.box-container.selected .corner.bottom-right {
   bottom: -4px;
   right: -4px;
   cursor: nwse-resize;
