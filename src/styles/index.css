@@ -12,7 +12,6 @@
   border: 2px solid black;
   background-color: white;
   position: relative;
-  cursor: move;
   border-radius: 5px;
 }
 
@@ -38,12 +37,73 @@
 .box-container.selected {
   border: 2px solid blue;
   border-style: solid;
+  position: relative;
 }
 
-.box-container:hover {
-  border-style: dashed;
-  border-color: blue;
+/* Corner squares for selected box */
+.box-container.selected .corner {
+  width: 8px;
+  height: 8px;
+  background-color: blue;
+  position: absolute;
 }
+
+.box-container.selected .corner.top-left {
+  top: -4px;
+  left: -4px;
+  cursor: nwse-resize;
+}
+
+.box-container.selected .corner.top-right {
+  top: -4px;
+  right: -4px;
+  cursor: nesw-resize;
+}
+
+.box-container.selected .corner.bottom-left {
+  bottom: -4px;
+  left: -4px;
+  cursor: nesw-resize;
+}
+
+.box-container.selected .corner.bottom-right {
+  bottom: -4px;
+  right: -4px;
+  cursor: nwse-resize;
+}
+
+/* Hook points styling */
+.hook-points .hook {
+  width: 10px;
+  height: 10px;
+  background-color: blue;
+  position: absolute;
+}
+
+.hook-points .hook.top {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hook-points .hook.right {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hook-points .hook.bottom {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hook-points .hook.left {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -56,11 +116,31 @@
 }
 
 .toolbar {
-  background-color: #f0f0f0;
-  padding: 10px;
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
+  gap: 10px;
+  padding: 10px;
+}
+
+.toolbar button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.toolbar button:hover {
+  background-color: #d0d0d0;
+}
+
+.toolbar button:focus {
+  outline: none;
+}
+
+.toolbar button.active {
+  background-color: #007bff;
+  color: white;
 }
 
 .box-content {
