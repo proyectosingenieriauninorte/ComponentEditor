@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./propertiesPanel.css";
 export default function PropertiesPanel({ selectedBox, onUpdateBox }) {
   const handleNameChange = (e) => {
     const updatedName = e.target.value;

@@ -1,0 +1,11 @@
+.properties-panel {
+  width: 300px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-right: 1px solid #ddd;
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+.properties-panel input {
+  width: 100%;
+}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import Box from "./Box";
-import Line from "./Line";
-import Modes from "../modes";
-
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Box from "../Box";
+import Line from "../Line";
+import Modes from "@/app/Modules/Toolbar/Modes";
+import "./canvas.css";
 export default function Canvas({
   selectedTool, onSelectBox,
   boxes = [],
@@ -11,82 +11,75 @@ export default function Canvas({
   updateBoxPosition,
   deleteBox: deleteBoxCallback,
   onAddLine,
-  clearSelection }) {
-  const canvasRef = useRef(null); // Create a ref for the canvas
-
+  clearSelection 
+}) {
+  const canvasRef = useRef(null);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const [lineStartBoxId, setLineStartBoxId] = useState(null);
   const [tempBox, setTempBox] = useState(null);
   const [canvasRect, setCanvasRect] = useState(null);
   const [lineStart, setLineStart] = useState(null);
 
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter = useCallback((e) => {
     if (selectedTool === Modes.NEW_BOX && !tempBox) {
       const rect = e.currentTarget.getBoundingClientRect();
-      setCanvasRect(rect); // Store the bounding rect
+      setCanvasRect(rect);
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const newBox = {
-        id: "temp", // Temporary ID
-        x: x,
-        y: y,
+      setTempBox({
+        id: "temp",
+        x,
+        y,
         name: "New Box",
         color: "#ffffff",
-      };
-      setTempBox(newBox);
+      });
     }
-  };
+  }, [selectedTool, tempBox]);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     if (tempBox && canvasRect) {
       let x = e.clientX - canvasRect.left;
       let y = e.clientY - canvasRect.top;
-      x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
-      y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
-      setTempBox({ ...tempBox, x, y });
+      x = Math.max(0, Math.min(x, canvasRect.width - 150));
+      y = Math.max(0, Math.min(y, canvasRect.height - 50));
+      setTempBox((prev) => ({ ...prev, x, y }));
     }
-  };
+  }, [tempBox, canvasRect]);
 
-  const handleCanvasClick = (e) => {
+  const handleCanvasClick = useCallback((e) => {
     e.preventDefault();
-    console.log("Canvas clicked");  // Debugging log
-    clearSelection(); // Clear the selection when the canvas is clicked
-  };
+    clearSelection();
+  }, [clearSelection]);
 
-  const handleBoxClick = (boxId, e) => {
-    e.stopPropagation(); // Stop the event from propagating to the canvas
+  const handleBoxClick = useCallback((boxId, e) => {
+    e.stopPropagation();
     if (selectedTool === Modes.SELECT) {
-      console.log(`Hook Box clicked: ${boxId}`);  // Debugging log
       setSelectedBoxId(boxId);
       onSelectBox(boxId);
     }
-  };
+  }, [selectedTool, onSelectBox]);
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = useCallback((e) => {
     if (tempBox && canvasRect) {
       let x = e.clientX - canvasRect.left;
       let y = e.clientY - canvasRect.top;
-
-      // Ensure tempBox stays within canvas boundaries
-      x = Math.max(0, Math.min(x, canvasRect.width - 150)); // Assuming box width is 150
-      y = Math.max(0, Math.min(y, canvasRect.height - 50));  // Assuming box height is 50
-
-      addBoxCallback(x, y); // Finalize the box position
-      setTempBox(null); // Clear the temporary box after placing
+      x = Math.max(0, Math.min(x, canvasRect.width - 150));
+      y = Math.max(0, Math.min(y, canvasRect.height - 50));
+      addBoxCallback(x, y);
+      setTempBox(null);
     }
-  };
+  }, [tempBox, canvasRect, addBoxCallback]);
 
-  const handleHookClick = (boxId, hookPointId) => {
+  const handleHookClick = useCallback((boxId, hookPointId) => {
     if (selectedTool === Modes.NEW_LINE) {
-      console.log(`Hook clicked: Box ${boxId}, Hook ${hookPointId}`);  // Debugging log
       if (lineStart) {
-        onAddLine(lineStart.boxId, boxId, lineStart.hookPointId, hookPointId); // Pass both box IDs and hook points
+        onAddLine(lineStart.boxId, boxId, lineStart.hookPointId, hookPointId);
         setLineStart(null);
       } else {
         setLineStart({ boxId, hookPointId });
       }
     }
-  };
+  }, [selectedTool, lineStart, onAddLine]);
 
   useEffect(() => {
     if (tempBox) {
@@ -98,31 +91,30 @@ export default function Canvas({
     }
 
     if (canvasRef.current) {
-      setCanvasRect(canvasRef.current.getBoundingClientRect()); // Store the canvas dimensions
+      setCanvasRect(canvasRef.current.getBoundingClientRect());
     }
 
     const handleKeyDown = (e) => {
-      console.log(`Key pressed: ${e.key}`);  // Debugging
       if ((e.key === 'Delete' || e.key === 'Backspace') && selectedBoxId !== null) {
         deleteBoxCallback(selectedBoxId);
-        setSelectedBoxId(null);  // Deselect the box after deletion
+        setSelectedBoxId(null);
       }
       if (e.key === 'Escape') {
-        clearSelection(); // Clear the selection
+        clearSelection();
       }
-    }
+    };
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-    }
-  }, [selectedBoxId, deleteBoxCallback, tempBox]);
+    };
+  }, [selectedBoxId, deleteBoxCallback, tempBox, handleMouseMove, handleMouseUp, clearSelection]);
 
   return (
     <div
-      ref={canvasRef} // Assign the ref to the canvas
+      ref={canvasRef}
       className="canvas"
       onMouseEnter={handleMouseEnter}
       onClick={handleCanvasClick}
@@ -137,8 +129,8 @@ export default function Canvas({
           deleteBox={deleteBoxCallback}
           selectedTool={selectedTool}
           onHookClick={handleHookClick}
-          canvasWidth={canvasRect ? canvasRect.width : 0}  // Pass the canvas width
-          canvasHeight={canvasRect ? canvasRect.height : 0} // Pass the canvas height          
+          canvasWidth={canvasRect ? canvasRect.width : 0}
+          canvasHeight={canvasRect ? canvasRect.height : 0}
         />
       ))}
       {lines.map((line) => (
@@ -149,12 +141,12 @@ export default function Canvas({
         <Box
           boxData={tempBox}
           selectedTool={selectedTool}
-          updateBoxPosition={() => { }}
-          onPointerDown={() => { }}
-          onHookClick={() => { }}
-          deleteBox={() => { }}
-          canvasWidth={canvasRect ? canvasRect.width : 0}  // Pass the canvas width
-          canvasHeight={canvasRect ? canvasRect.height : 0} // Pass the canvas height          
+          updateBoxPosition={() => {}}
+          onPointerDown={() => {}}
+          onHookClick={() => {}}
+          deleteBox={() => {}}
+          canvasWidth={canvasRect ? canvasRect.width : 0}
+          canvasHeight={canvasRect ? canvasRect.height : 0}
         />
       )}
     </div>
