@@ -1,13 +1,11 @@
-"use client"
-
 import React, { useState } from "react";
-import Canvas from "@Modules/Draw/Components/Canvas";
-import Toolbar from "@Modules/Toolbar/Components/Toolbar";
-import PropertiesPanel from "@Modules/Toolbar/Components/PropertiesPanel";
-import { useCanvas } from "./Modules/Draw/Hooks/useCanvas";
-import Modes from "./Modules/Toolbar/Modes";
+import Canvas from "./components/Canvas";
+import Toolbar from "./components/Toolbar";
+import PropertiesPanel from "./components/PropertiesPanel";
+import { useCanvas } from "./hooks";  // Import from index.js
+import Modes from "./modes";
 
-export default function Home() {
+function App() {
   const [selectedTool, setSelectedTool] = useState(Modes.SELECT);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
   const { boxes, lines, addBox, updateBoxPosition, updateBox, deleteBox, addLine, selectBox } = useCanvas();
@@ -81,3 +79,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default App;
