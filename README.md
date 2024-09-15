@@ -1,6 +1,6 @@
 # Box Link Editor
 
-A simple web application for creating and linking boxes with lines.
+Simple web application for creating and linking boxes with lines.
 
 ## Setup
 
