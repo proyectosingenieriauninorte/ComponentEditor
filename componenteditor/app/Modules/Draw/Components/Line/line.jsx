@@ -1,36 +1,21 @@
 import "./Line.css";
-import React from "react";
+import React, { Component } from "react";
 
-// Memoized Line component to avoid unnecessary re-renders
-const Line = React.memo(({ data, boxes }) => {
-  const { startBoxId, endBoxId, startHook, endHook } = data;
-  const startBox = boxes.find(box => box.id === startBoxId);
-  const endBox = boxes.find(box => box.id === endBoxId);
+class Line extends Component {
+  constructor(props) {
+    super(props);
 
-  if (!startBox || !endBox) {
-    console.error("Start or End Box not found", { startBox, endBox });
-    return null;
+    this.hookOffsets = {
+      top: { x: 75, y: 0 },
+      right: { x: 150, y: 25 },
+      bottom: { x: 75, y: 50 },
+      left: { x: 0, y: 25 },
+    };
+
+    this.getPerpendicularSegment = this.getPerpendicularSegment.bind(this);
   }
 
-  const hookOffsets = {
-    top: { x: 75, y: 0 },
-    right: { x: 150, y: 25 },
-    bottom: { x: 75, y: 50 },
-    left: { x: 0, y: 25 },
-  };
-
-  if (!hookOffsets[startHook] || !hookOffsets[endHook]) {
-    console.error("Invalid startHook or endHook", { startHook, endHook });
-    return null;
-  }
-
-  const startX = startBox.x + hookOffsets[startHook].x;
-  const startY = startBox.y + hookOffsets[startHook].y;
-  const endX = endBox.x + hookOffsets[endHook].x;
-  const endY = endBox.y + hookOffsets[endHook].y;
-
-  // Calculate the perpendicular segment based on hook point
-  const getPerpendicularSegment = (hook, x, y) => {
+  getPerpendicularSegment(hook, x, y) {
     switch (hook) {
       case "top":
         return `L ${x},${y - 20} `;
@@ -43,23 +28,44 @@ const Line = React.memo(({ data, boxes }) => {
       default:
         return "";
     }
-  };
+  }
 
-  // Build the path with the calculated segments
-  const pathD = `
-    M ${startX},${startY} 
-    ${getPerpendicularSegment(startHook, startX, startY)}
-    ${getPerpendicularSegment(endHook, endX, endY)}
-    L ${endX},${endY}
-  `;
+  render() {
+    const { data, boxes } = this.props;
+    const { startBoxId, endBoxId, startHook, endHook } = data;
+    const startBox = boxes.find((box) => box.id === startBoxId);
+    const endBox = boxes.find((box) => box.id === endBoxId);
 
-  return (
-    <svg style={{ position: "absolute", overflow: "visible" }}>
-      <g>
-        <path d={pathD} stroke="gray" strokeWidth="2" fill="none" />
-      </g>
-    </svg>
-  );
-});
+    if (!startBox || !endBox) {
+      console.error("Start or End Box not found", { startBox, endBox });
+      return null;
+    }
 
-export default Line;
+    if (!this.hookOffsets[startHook] || !this.hookOffsets[endHook]) {
+      console.error("Invalid startHook or endHook", { startHook, endHook });
+      return null;
+    }
+
+    const startX = startBox.x + this.hookOffsets[startHook].x;
+    const startY = startBox.y + this.hookOffsets[startHook].y;
+    const endX = endBox.x + this.hookOffsets[endHook].x;
+    const endY = endBox.y + this.hookOffsets[endHook].y;
+
+    const pathD = `
+      M ${startX},${startY} 
+      ${this.getPerpendicularSegment(startHook, startX, startY)}
+      ${this.getPerpendicularSegment(endHook, endX, endY)}
+      L ${endX},${endY}
+    `;
+
+    return (
+      <svg style={{ position: "absolute", overflow: "visible" }}>
+        <g>
+          <path d={pathD} stroke="gray" strokeWidth="2" fill="none" />
+        </g>
+      </svg>
+    );
+  }
+}
+
+export default React.memo(Line);
