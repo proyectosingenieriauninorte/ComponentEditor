@@ -1,0 +1,41 @@
+
+.hook-points .hook {
+    width: 10px;
+    height: 10px;
+    background-color: blue;
+    position: absolute;
+  }
+  
+  .hook-points .hook.top {
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .hook-points .hook.right {
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .hook-points .hook.bottom {
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .hook-points .hook.left {
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .main-layout {
+    display: flex;
+    height: calc(100% - 50px); /* Assuming the toolbar is 50px high */
+  }
