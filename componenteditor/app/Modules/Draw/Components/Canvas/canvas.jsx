@@ -56,7 +56,7 @@ class Canvas extends Component {
   };
 
   handleBoxClick = (boxId, e) => {
-    e.stopPropagation();
+    
     const { selectedTool, onSelectBox } = this.props;
     if (selectedTool === Modes.SELECT) {
       this.setState({ selectedBoxId: boxId });

@@ -51,8 +51,8 @@ export default function Home() {
     }
   }
 
-  const selectedBox = boxes.find((box) => box.id === selectedBoxId);
-
+  const selectedBox = boxes.find((box) => box.selected === true);
+  console.log(`App.js Selected Box: ${selectedBoxId}`, selectedBox);
   const clearSelection = () => {
     console.log(`App.js Clearing selection ${selectedBoxId}`);
     //selectBox(null);  // TODO: Uncomment this line when fix the issue that allows the canvas to be clicked when a box is clicked  
