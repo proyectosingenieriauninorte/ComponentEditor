@@ -5,6 +5,7 @@ Simple web application for creating and linking boxes with lines.
 ## Setup
 
 1. Clone the repository.
+   1.1 s Access the componenteditor folder
 2. Run `npm install` to install dependencies.
 3. Run `npm run dev` to start the development server.
 
