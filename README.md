@@ -4,14 +4,14 @@ Simple web application for creating and linking boxes with lines.
 
 ## Setup
 
-1. Clone the repository.
-   1.1 s Access the componenteditor folder
+1. Clone the repository.   
+2. Run `cd componenteditor`   
 2. Run `npm install` to install dependencies.
 3. Run `npm run dev` to start the development server.
 
 ## With Docker
-To dockerize the app:
-docker build -t componenteditor .
+To dockerize the app:   
+docker build -t componenteditor .   
 docker run -d -it -p 5019:3000 --restart unless-stopped --name componenteditor-app componenteditor
 
 
