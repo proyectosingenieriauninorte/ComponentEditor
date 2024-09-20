@@ -120,7 +120,7 @@ class Canvas extends Component {
   handleKeyDown = (e) => {
     const { deleteBox: deleteBoxCallback, clearSelection } = this.props;
     const { selectedBoxId } = this.state;
-    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedBoxId !== null) {
+    if ((e.key === 'Delete') && selectedBoxId !== null) {
       deleteBoxCallback(selectedBoxId);
       this.setState({ selectedBoxId: null });
     }
