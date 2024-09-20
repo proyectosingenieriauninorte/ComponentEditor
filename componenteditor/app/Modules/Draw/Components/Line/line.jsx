@@ -1,4 +1,4 @@
-import "./Line.css";
+import "./line.css";
 import React, { Component } from "react";
 
 class Line extends Component {

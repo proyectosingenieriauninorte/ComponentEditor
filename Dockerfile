@@ -4,20 +4,20 @@ FROM node:18-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json and package-lock.json to install dependencies
+COPY componenteditor/package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install only production dependencies
+RUN npm install --production
 
 # Copy the rest of the application code
-COPY . .
+COPY componenteditor/ .
 
-# Build the application
+# Build the application for production
 RUN npm run build
 
-# Expose port 3000
+# Expose the application port
 EXPOSE 3000
 
-# Command to run the app
-CMD ["npm", "run", "dev"]
+# Start the application in production mode
+CMD ["npm", "start"]
