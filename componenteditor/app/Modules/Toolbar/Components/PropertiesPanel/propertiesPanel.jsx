@@ -5,6 +5,7 @@ class PropertiesPanel extends Component {
   constructor(props) {
     super(props);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleColorChange = this.handleColorChange.bind(this);
   }
 
   handleNameChange(e) {
@@ -13,6 +14,15 @@ class PropertiesPanel extends Component {
     onUpdateBox(selectedBox.id, {
       ...selectedBox,
       name: updatedName,
+    });
+  }
+
+  handleColorChange(e) {
+    const updatedColor = e.target.value;
+    const { selectedBox, onUpdateBox } = this.props;
+    onUpdateBox(selectedBox.id, {
+      ...selectedBox,
+      color: updatedColor,
     });
   }
 
@@ -32,6 +42,14 @@ class PropertiesPanel extends Component {
             type="text"
             value={selectedBox.name}
             onChange={this.handleNameChange}
+          />
+        </div>
+        <div>
+          <label>Color:</label>
+          <input
+            type="color"
+            value={selectedBox.color || "#000000"}
+            onChange={this.handleColorChange}
           />
         </div>
         {/* Other properties can be added here */}
