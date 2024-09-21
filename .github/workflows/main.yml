@@ -23,10 +23,9 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          cd /home/proyecto/MIPSTranslator/
+          cd /home/proyecto/CompomentEditor/
           git pull origin main
           git status
           docker stop componenteditor-app
-          docker rm componenteditor-app
           docker build -t componenteditor .
           docker run -d -it -p 5019:3000 --restart unless-stopped --name componenteditor-app componenteditor
