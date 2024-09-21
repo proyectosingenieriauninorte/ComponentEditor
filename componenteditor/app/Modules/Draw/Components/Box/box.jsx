@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Modes from "@/app/Modules/Toolbar/Modes";
+import { useEffect } from "react";
 import "./box.css";
 
 class Box extends Component {
@@ -10,16 +11,39 @@ class Box extends Component {
       offset: { x: 0, y: 0 },
     };
 
+    const { boxData } = this.props;
+
+    const boxWidth = boxData.width / 2;
+    const boxHeight = boxData.height / 2;
+
     this.hookPoints = [
-      { id: "top", x: 75, y: 0 },
-      { id: "right", x: 150, y: 25 },
-      { id: "bottom", x: 75, y: 50 },
-      { id: "left", x: 0, y: 25 },
+      { id: "top", x: boxWidth, y: 0 },
+      { id: "right", x: boxData.width, y: boxHeight },
+      { id: "bottom", x: boxWidth, y: boxData.height },
+      { id: "left", x: 0, y: boxHeight },
     ];
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+  }
+
+  updateHookPoints() {
+    const { boxData } = this.props;
+    const boxWidth = boxData.width / 2;
+    const boxHeight = boxData.height / 2;
+    this.hookPoints = [
+      { id: "top", x: boxWidth, y: 0 },
+      { id: "right", x: boxData.width, y: boxHeight },
+      { id: "bottom", x: boxWidth, y: boxData.height },
+      { id: "left", x: 0, y: boxHeight },
+    ];
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.boxData !== this.props.boxData) {
+      this.updateHookPoints();
+    }
   }
 
   handleMouseDown(e) {
@@ -71,8 +95,8 @@ class Box extends Component {
       <svg
         x={boxData.x}
         y={boxData.y}
-        width="150"
-        height="50"
+        width={boxData.width}
+        height={boxData.height}
         onMouseDown={this.handleMouseDown}
         style={{
           position: "absolute",
@@ -82,8 +106,8 @@ class Box extends Component {
         }}
       >
         <foreignObject
-          width="150"
-          height="50"
+          width={boxData.width}
+          height={boxData.height}
           className={`box-container ${boxData.selected ? "selected" : ""}`}
         >
           <div>
@@ -97,9 +121,9 @@ class Box extends Component {
         {boxData.selected && (
           <>
             <rect x={0} y={0} width={8} height={8} fill="blue" className="corner top-left" />
-            <rect x={142} y={0} width={8} height={8} fill="blue" className="corner top-right" />
-            <rect x={0} y={42} width={8} height={8} fill="blue" className="corner bottom-left" />
-            <rect x={142} y={42} width={8} height={8} fill="blue" className="corner bottom-right" />
+            <rect x={boxData.width - 8} y={0} width={8} height={8} fill="blue" className="corner top-right" />
+            <rect x={0} y={boxData.height - 8} width={8} height={8} fill="blue" className="corner bottom-left" />
+            <rect x={boxData.width - 8} y={boxData.height - 8} width={8} height={8} fill="blue" className="corner bottom-right" />
           </>
         )}
 
