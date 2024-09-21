@@ -44,6 +44,26 @@ class PropertiesPanel extends Component {
             onChange={this.handleNameChange}
           />
         </div>
+        <div> 
+          <label>Inputs</label>
+          <input 
+            type="number"
+            name="inputs"
+            value={selectedBox.inputs || 2}
+            onChange={this.handleInputChange}
+            min="1"
+            /> 
+        </div>
+        <div> 
+          <label>Outputs</label>
+          <input
+            type="number"
+            name="outputs"
+            value={selectedBox.outputs || 2}
+            onChange={this.handleOutputChange}
+            min="1"
+          />
+        </div> 
         <div>
           <label>Color:</label>
           <input
