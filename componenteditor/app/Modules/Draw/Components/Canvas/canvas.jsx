@@ -2,22 +2,30 @@ import React, { Component, createRef } from "react";
 import Box from "../Box";
 import Line from "../Line";
 import Modes from "@/app/Modules/Toolbar/Modes";
-import CanvasManager from "./canvasmanager";
+import CanvasManager from "./canvasmanager.jsx";
 import "./canvas.css";
 
 class Canvas extends Component {
   constructor(props) {
     super(props);
     this.canvasRef = createRef();
-    this.canvasManager = new CanvasManager();
-    this.state = this.canvasManager.state;
+    this.canvasManagerRef = createRef();
+    this.state = {
+      selectedBoxId: null,
+      lineStartBoxId: null,
+      tempBox: null,
+      canvasRect: null,
+      lineStart: null,
+      boxes: [],
+      lines: [],
+    };
   }
 
   componentDidMount() {
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
     if (this.canvasRef.current) {
-      this.canvasManager.setCanvasRect(this.canvasRef.current.getBoundingClientRect());
+      this.canvasManagerRef.current.setCanvasRect(this.canvasRef.current.getBoundingClientRect());
     }
     window.addEventListener("keydown", this.handleKeyDown);
   }
@@ -29,33 +37,33 @@ class Canvas extends Component {
   }
 
   handleMouseEnter = (e) => {
-    this.canvasManager.handleMouseEnter(e, this.props.selectedTool);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleMouseEnter(e, this.props.selectedTool);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   handleMouseMove = (e) => {
-    this.canvasManager.handleMouseMove(e);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleMouseMove(e);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   handleMouseUp = (e) => {
-    this.canvasManager.handleMouseUp(e, this.props.addBox);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleMouseUp(e, this.props.addBox);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   handleBoxClick = (boxId, e) => {
-    this.canvasManager.handleBoxClick(boxId, this.props.selectedTool, this.props.onSelectBox);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleBoxClick(boxId, this.props.selectedTool, this.props.onSelectBox);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   handleHookClick = (boxId, hookPointId) => {
-    this.canvasManager.handleHookClick(boxId, hookPointId, this.props.selectedTool, this.props.onAddLine);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleHookClick(boxId, hookPointId, this.props.selectedTool, this.props.onAddLine);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   handleKeyDown = (e) => {
-    this.canvasManager.handleKeyDown(e, this.props.deleteBox, this.props.clearSelection);
-    this.setState(this.canvasManager.state);
+    this.canvasManagerRef.current.handleKeyDown(e, this.props.deleteBox, this.props.clearSelection);
+    this.setState(this.canvasManagerRef.current.state);
   };
 
   render() {
@@ -70,6 +78,7 @@ class Canvas extends Component {
         onClick={this.props.clearSelection}
         style={{ position: "relative", width: "100%", height: "100%" }}
       >
+        <CanvasManager ref={this.canvasManagerRef} />
         {boxes.map((box) => (
           <Box
             key={box.id}
