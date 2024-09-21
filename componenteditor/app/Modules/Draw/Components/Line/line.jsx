@@ -4,16 +4,32 @@ import React, { Component } from "react";
 class Line extends Component {
   constructor(props) {
     super(props);
+    const { data, boxes } = this.props;
+    const { startBoxId, endBoxId, startHook, endHook } = data;
+    const startBox = boxes.find((box) => box.id === startBoxId);
+    const endBox = boxes.find((box) => box.id === endBoxId);
 
+
+
+    
     this.hookOffsets = {
-      top: { x: 75, y: 0 },
-      right: { x: 150, y: 25 },
-      bottom: { x: 75, y: 50 },
-      left: { x: 0, y: 25 },
+      StartOffsets: {
+        top: { x: startBox.width / 2, y: 0 },
+        right: { x: startBox.width, y: startBox.height / 2 },
+        bottom: { x: startBox.width / 2, y: startBox.height },
+        left: { x: 0, y: startBox.height / 2 },
+      },
+      EndOffsets: {
+      top: { x: endBox.width / 2, y: 0 },
+      right: { x: endBox.width, y: endBox.height / 2 },
+      bottom: { x: endBox.width / 2, y: endBox.height },
+      left: { x: 0, y: endBox.height / 2 },
+      }
     };
-
     this.getPerpendicularSegment = this.getPerpendicularSegment.bind(this);
   }
+
+
 
   getPerpendicularSegment(hook, x, y) {
     switch (hook) {
@@ -41,15 +57,17 @@ class Line extends Component {
       return null;
     }
 
-    if (!this.hookOffsets[startHook] || !this.hookOffsets[endHook]) {
+    if (!this.hookOffsets.StartOffsets[startHook] || !this.hookOffsets.EndOffsets[endHook]) {
       console.error("Invalid startHook or endHook", { startHook, endHook });
       return null;
     }
-
-    const startX = startBox.x + this.hookOffsets[startHook].x;
-    const startY = startBox.y + this.hookOffsets[startHook].y;
-    const endX = endBox.x + this.hookOffsets[endHook].x;
-    const endY = endBox.y + this.hookOffsets[endHook].y;
+    console.log(`Line from ${startBoxId} to ${endBoxId} from ${startHook} to ${endHook}`);
+    console.log("StartOffsets", this.hookOffsets.StartOffsets);
+    console.log("EndOffsets", this.hookOffsets.EndOffsets);
+    const startX = startBox.x + this.hookOffsets.StartOffsets[startHook].x;
+    const startY = startBox.y + this.hookOffsets.StartOffsets[startHook].y;
+    const endX = endBox.x + this.hookOffsets.EndOffsets[endHook].x;
+    const endY = endBox.y + this.hookOffsets.EndOffsets[endHook].y;
 
     const pathD = `
       M ${startX},${startY} 

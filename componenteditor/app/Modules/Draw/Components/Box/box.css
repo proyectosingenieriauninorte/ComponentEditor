@@ -1,8 +1,9 @@
 .box-container {
     border: 2px solid black;
-    background-color: white;
+    background-color: rgb(148, 148, 148);
     position: relative;
     border-radius: 5px;
+    background-color: #e0e0e0;
   }
   
   .box-container .box-header {
@@ -19,11 +20,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid gray;
-    background-color: #e0e0e0;
+    
+    
     padding: 5px;
   }
-  
+ 
   .box-container.selected {
     border: 2px solid blue;
     border-style: solid;

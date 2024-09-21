@@ -30,6 +30,8 @@ class Canvas extends Component {
           id: "temp",
           x,
           y,
+          width: 150,
+          height: 50,
           name: "New Box",
           color: "#ffffff",
         },
