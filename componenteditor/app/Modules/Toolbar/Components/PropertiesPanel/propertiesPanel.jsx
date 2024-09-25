@@ -83,6 +83,15 @@ class PropertiesPanel extends Component {
     this.inputNameRef.current.focus();
   };
 
+  handleColorChange = (e) => {
+    const updatedColor = e.target.value;
+    const { selectedBox, onUpdateBox } = this.props;
+    onUpdateBox(selectedBox.id, {
+      ...selectedBox,
+      color: updatedColor,
+    });
+  }
+
   render() {
     const { selectedBox } = this.props;
     const { updatedName, error } = this.state;
@@ -128,6 +137,34 @@ class PropertiesPanel extends Component {
               onChange={this.handleDimensionChange('height')}
             />
           </div>
+        <div> 
+          <label>Inputs</label>
+          <input 
+            type="number"
+            name="inputs"
+            value={selectedBox.inputs || 2}
+            onChange={this.handleInputChange}
+            min="1"
+            /> 
+        </div>
+        <div> 
+          <label>Outputs</label>
+          <input
+            type="number"
+            name="outputs"
+            value={selectedBox.outputs || 2}
+            onChange={this.handleOutputChange}
+            min="1"
+          />
+        </div> 
+        <div>
+          <label>Color:</label>
+          <input
+            type="color"
+            value={selectedBox.color || "#000000"}
+            onChange={this.handleColorChange}
+          />
+        </div>
         </section>
       </div>
     );
