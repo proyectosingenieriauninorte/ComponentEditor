@@ -10,7 +10,7 @@ import Modes from "./Modules/Toolbar/Modes";
 export default function Home() {
   const [selectedTool, setSelectedTool] = useState(Modes.SELECT);
   const [selectedBoxId, setSelectedBoxId] = useState(null);
-  const { boxes, lines, addBox, updateBoxPosition, updateBox, deleteBox, addLine, selectBox } = useCanvas();
+  const { boxes, lines, isBoxNameUnique, addBox, updateBoxPosition, updateBox, deleteBox, addLine, selectBox } = useCanvas();
 
   const handleSelectTool = (tool) => {
     console.log(`App.js Selected Tool: ${tool}`);
@@ -65,6 +65,7 @@ export default function Home() {
         <PropertiesPanel
           selectedBox={selectedBox}
           onUpdateBox={handleUpdateBox}
+          isBoxNameUnique={isBoxNameUnique}
         />
         <Canvas
           selectedTool={selectedTool}

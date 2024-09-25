@@ -1,4 +1,5 @@
 import { useState } from "react";
+import box from "../Components/Box/box";
 
 export function useCanvas() {
   const [boxes, setBoxes] = useState([]);
@@ -52,9 +53,17 @@ export function useCanvas() {
       console.log(`Box moved to nearest valid position at (${finalPosition.x}, ${finalPosition.y}).`);
     }
 
+    let boxNameIndex = boxes.length + 1;
+
+    while (!isBoxNameUnique(`Box ${boxNameIndex}`)) {
+      boxNameIndex++;
+    }
+    
+    const boxName = `Box ${boxNameIndex}`;
+    
     const newBox = {
       id: boxes.length + 1,
-      name: `Box ${boxes.length + 1}`,
+      name: boxName,
       x: finalPosition.x,
       y: finalPosition.y,
       width,
@@ -62,7 +71,6 @@ export function useCanvas() {
       color,
       selected: false,
     };
-
     setBoxes([...boxes, newBox]);
     console.log(`Added Box ID: ${newBox.id}, Position: (${newBox.x}, ${newBox.y})`);
   };
@@ -121,9 +129,14 @@ export function useCanvas() {
     );
   };
 
+  const isBoxNameUnique = (newBoxName) => {
+    return !boxes.some((box) => box.name === newBoxName);
+  };
+
   return {
     boxes,
     lines,
+    isBoxNameUnique,
     addBox,
     updateBoxPosition,
     updateBox,

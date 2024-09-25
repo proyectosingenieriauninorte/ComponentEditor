@@ -9,3 +9,10 @@
 .properties-panel input {
   width: 100%;
 }
+
+.properties-error {
+  padding: 5px;
+  padding: 10px;
+  background-color: #f2dede;
+  border: 1px solid #000;
+}

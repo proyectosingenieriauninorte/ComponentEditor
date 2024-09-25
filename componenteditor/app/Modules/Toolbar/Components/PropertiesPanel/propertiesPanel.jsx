@@ -4,43 +4,88 @@ import "./propertiesPanel.css";
 class PropertiesPanel extends Component {
   constructor(props) {
     super(props);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleWidthChange = this.handleWidthChange.bind(this);
-    this.handleHeightChange = this.handleHeightChange.bind(this);
+    const { selectedBox } = props;
+
+    this.state = {  
+      updatedName: selectedBox ? selectedBox.name : "",
+      error: {
+        message: '',
+        type: ''
+      }
+    };
     
+    this.inputNameRef = React.createRef();
   }
 
-  handleNameChange(e) {
-    const updatedName = e.target.value;
-    const { selectedBox, onUpdateBox } = this.props;
+  componentDidUpdate(prevProps) {
+    const { selectedBox } = this.props;
+    if (prevProps.selectedBox !== selectedBox) {
+      this.setState({
+        updatedName: selectedBox ? selectedBox.name : ""
+      });
+    }
+  }
+
+  handleNameChange = (e) => {
+    this.setState({ updatedName: e.target.value });
+  };
+
+  handleNameUpdate = () => {
+    const { selectedBox, onUpdateBox, isBoxNameUnique } = this.props;
+    const { updatedName } = this.state;
+
+    if (!updatedName.trim()) {
+      this.setError({ message: 'Name cannot be empty',  type: 'name'});
+      return;
+    }
+
+    if (!isBoxNameUnique(updatedName) && selectedBox.name !== updatedName) {
+      this.setError({ message: 'Name must be unique',  type: 'name'});
+      return;
+    }
+
+    this.clearError();
+
     onUpdateBox(selectedBox.id, {
       ...selectedBox,
       name: updatedName,
     });
-  }
+  };
 
-  handleWidthChange(e) {
-    const updatedWidth = e.target.value;
+  handleNameInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      this.handleNameUpdate();
+    }
+  };
+
+  handleDimensionChange = (dimension) => (e) => {
+    const updatedValue = parseInt(e.target.value, 10);
     const { selectedBox, onUpdateBox } = this.props;
-    console.log(selectedBox);
-    console.log(onUpdateBox); 
+
     onUpdateBox(selectedBox.id, {
       ...selectedBox,
-      width: parseInt(updatedWidth),
+      [dimension]: updatedValue,
     });
-  }
+  };
 
-  handleHeightChange(e) {
-    const updatedHeight = e.target.value;
-    const { selectedBox, onUpdateBox } = this.props;
-    onUpdateBox(selectedBox.id, {
-      ...selectedBox,
-      height: parseInt(updatedHeight)
-    });
-  }
+  setError = ({ message, type }) => {
+    this.setState({ error: { message, type } });
+  };
+
+  clearError = () => {
+    if (this.state.error.type === 'name') {
+      this.clearNameError();
+    }
+    this.setState({ error: { message: '', type: '' } });
+  };
+
+  clearNameError = () => {
+    this.inputNameRef.current.focus();
+  };
 
   render() {
     const { selectedBox } = this.props;
+    const { updatedName, error } = this.state;
 
     if (!selectedBox) {
       return <div className="properties-panel">No box selected</div>;
@@ -48,14 +93,23 @@ class PropertiesPanel extends Component {
 
     return (
       <div className="properties-panel">
+        {error.message && (
+          <div className="properties-error">
+            <p className="properties-error-message">{error.message}</p>
+            <button className="properties-error-button" onClick={this.clearError}>Close</button>
+          </div>
+        )}
         <h3>Properties</h3>
         <section>
           <div>
             <label>Name:</label>
             <input
               type="text"
-              value={selectedBox.name}
+              value={updatedName}
               onChange={this.handleNameChange}
+              onBlur={this.handleNameUpdate}
+              onKeyDown={this.handleNameInputKeyDown}
+              ref={this.inputNameRef}
             />
           </div>
           <div>
@@ -63,7 +117,7 @@ class PropertiesPanel extends Component {
             <input
               type="number"
               value={selectedBox.width}
-              onChange={this.handleWidthChange}
+              onChange={this.handleDimensionChange('width')}
             />
           </div>
           <div>
@@ -71,7 +125,7 @@ class PropertiesPanel extends Component {
             <input
               type="number"
               value={selectedBox.height}
-              onChange={this.handleHeightChange}
+              onChange={this.handleDimensionChange('height')}
             />
           </div>
         </section>
