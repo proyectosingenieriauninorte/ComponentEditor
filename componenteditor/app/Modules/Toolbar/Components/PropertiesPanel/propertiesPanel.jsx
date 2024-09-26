@@ -92,6 +92,24 @@ class PropertiesPanel extends Component {
     });
   }
 
+  handleInputChange = (e) => {
+    const updatedInputs = Math.max(1, parseInt(e.target.value, 10));
+    const { selectedBox, onUpdateBox } = this.props;
+    onUpdateBox(selectedBox.id, {
+      ...selectedBox,
+      inputs: updatedInputs,
+    });
+  };
+
+  handleOutputChange = (e) => {
+    const updatedOutputs = Math.max(1, parseInt(e.target.value, 10));
+    const { selectedBox, onUpdateBox } = this.props;
+    onUpdateBox(selectedBox.id, {
+      ...selectedBox,
+      outputs: updatedOutputs,
+    });
+  };
+
   render() {
     const { selectedBox } = this.props;
     const { updatedName, error } = this.state;
@@ -137,34 +155,34 @@ class PropertiesPanel extends Component {
               onChange={this.handleDimensionChange('height')}
             />
           </div>
-        <div> 
-          <label>Inputs</label>
-          <input 
-            type="number"
-            name="inputs"
-            value={selectedBox.inputs || 2}
-            onChange={this.handleInputChange}
-            min="1"
+          <div> 
+            <label>Inputs</label>
+            <input 
+              type="number"
+              name="inputs"
+              value={selectedBox.inputs || 1}
+              onChange={this.handleInputChange}
+              min="1" 
             /> 
-        </div>
-        <div> 
-          <label>Outputs</label>
-          <input
-            type="number"
-            name="outputs"
-            value={selectedBox.outputs || 2}
-            onChange={this.handleOutputChange}
-            min="1"
-          />
-        </div> 
-        <div>
-          <label>Color:</label>
-          <input
-            type="color"
-            value={selectedBox.color || "#000000"}
-            onChange={this.handleColorChange}
-          />
-        </div>
+          </div>
+          <div> 
+            <label>Outputs</label>
+            <input
+              type="number"
+              name="outputs"
+              value={selectedBox.outputs || 1}
+              onChange={this.handleOutputChange}
+              min="1" 
+            />
+          </div> 
+          <div>
+            <label>Color:</label>
+            <input
+              type="color"
+              value={selectedBox.color || "#000000"}
+              onChange={this.handleColorChange}
+            />
+          </div>
         </section>
       </div>
     );
