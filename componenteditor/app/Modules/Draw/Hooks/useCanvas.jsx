@@ -69,6 +69,9 @@ export function useCanvas() {
       width,
       height,
       color,
+      inputs: 1,
+      outputs: 1,
+      hookCount: 2, // Define hookCount here with a default value
       selected: false,
     };
     setBoxes([...boxes, newBox]);
@@ -133,6 +136,12 @@ export function useCanvas() {
     return !boxes.some((box) => box.name === newBoxName);
   };
 
+  const updateBoxHookCount = (boxId, newHookCount) => {
+    setBoxes(prevBoxes => prevBoxes.map(box => 
+      box.id === boxId ? { ...box, hookCount: newHookCount } : box
+    ));
+  };
+
   return {
     boxes,
     lines,
@@ -143,5 +152,6 @@ export function useCanvas() {
     deleteBox,
     addLine,
     selectBox,
+    updateBoxHookCount,
   };
 }

@@ -85,6 +85,7 @@ class Canvas extends Component {
             boxData={box}
             onPointerDown={(e) => this.handleBoxClick(box.id, e)}
             updateBoxPosition={updateBoxPosition}
+            updateHookCount={(newCount) => updateBoxHookCount(box.id, newCount)}
             deleteBox={deleteBoxCallback}
             selectedTool={selectedTool}
             onHookClick={this.handleHookClick}

@@ -9,19 +9,8 @@ class Box extends Component {
     this.state = {
       dragging: false,
       offset: { x: 0, y: 0 },
+      hookPoints: [],
     };
-
-    const { boxData } = this.props;
-
-    const boxWidth = boxData.width / 2;
-    const boxHeight = boxData.height / 2;
-
-    this.hookPoints = [
-      { id: "top", x: boxWidth, y: 0 },
-      { id: "right", x: boxData.width, y: boxHeight },
-      { id: "bottom", x: boxWidth, y: boxData.height },
-      { id: "left", x: 0, y: boxHeight },
-    ];
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -30,18 +19,31 @@ class Box extends Component {
 
   updateHookPoints() {
     const { boxData } = this.props;
-    const boxWidth = boxData.width / 2;
-    const boxHeight = boxData.height / 2;
-    this.hookPoints = [
-      { id: "top", x: boxWidth, y: 0 },
-      { id: "right", x: boxData.width, y: boxHeight },
-      { id: "bottom", x: boxWidth, y: boxData.height },
-      { id: "left", x: 0, y: boxHeight },
-    ];
+    const boxWidth = boxData.width;
+    const boxHeight = boxData.height;
+    
+    const hookPoints = [];
+    const hookCount = boxData.inputs + boxData.outputs;
+
+    for (let i = 0; i < hookCount; i++) {
+      const angle = (i / hookCount) * 2 * Math.PI;
+      const x = boxWidth / 2 + (boxWidth / 2) * Math.cos(angle);
+      const y = boxHeight / 2 + (boxHeight / 2) * Math.sin(angle);
+      
+      hookPoints.push({
+        id: `hook${i + 1}`,
+        x: x,
+        y: y,
+        type: i < boxData.inputs ? 'input' : 'output'
+      });
+    }
+
+
+    this.setState({ hookPoints });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.boxData !== this.props.boxData) {
+    if (prevProps.boxData !== this.props.boxData || prevProps.selectedTool !== this.props.selectedTool) {
       this.updateHookPoints();
     }
   }
@@ -79,6 +81,8 @@ class Box extends Component {
   }
 
   componentDidMount() {
+    console.log("Box component mounted");
+    this.updateHookPoints();
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
   }
@@ -90,6 +94,7 @@ class Box extends Component {
 
   render() {
     const { boxData, selectedTool, onHookClick } = this.props;
+    const { hookPoints } = this.state;
 
     return (
       <svg
@@ -127,21 +132,21 @@ class Box extends Component {
           </>
         )}
 
-        {selectedTool === Modes.NEW_LINE &&
-          this.hookPoints.map((point) => (
-            <circle
-              key={point.id}
-              cx={point.x}
-              cy={point.y}
-              r="5"
-              fill="blue"
-              onClick={(e) => {
-                e.stopPropagation();
-                onHookClick(boxData.id, point.id);
-              }}
-              style={{ cursor: "crosshair" }}
-            />
-          ))}
+        {selectedTool === Modes.NEW_LINE && hookPoints.map((point) => (
+          <circle
+            key={point.id}
+            cx={point.x}
+            cy={point.y}
+            r="5"
+            fill="blue"
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log(`Hook clicked: Box ${boxData.id}, Hook ${point.id}`);
+              onHookClick(boxData.id, point.id);
+            }}
+            style={{ cursor: "crosshair" }}
+          />
+        ))}
       </svg>
     );
   }
