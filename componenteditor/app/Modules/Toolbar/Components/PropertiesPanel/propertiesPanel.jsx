@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { calculateHooks } from "@/app/Modules/Toolbar/Components/utils/hooks";
 import "./propertiesPanel.css";
+
 
 class PropertiesPanel extends Component {
   constructor(props) {
@@ -95,19 +97,41 @@ class PropertiesPanel extends Component {
   handleInputChange = (e) => {
     const updatedInputs = Math.max(1, parseInt(e.target.value, 10));
     const { selectedBox, onUpdateBox } = this.props;
+    const updatedHooks = calculateHooks(selectedBox.width, selectedBox.height, updatedInputs, selectedBox.outputs)
     onUpdateBox(selectedBox.id, {
       ...selectedBox,
       inputs: updatedInputs,
+      hookCount: selectedBox.outputs+updatedInputs,
+      hooks: updatedHooks
     });
   };
 
   handleOutputChange = (e) => {
     const updatedOutputs = Math.max(1, parseInt(e.target.value, 10));
     const { selectedBox, onUpdateBox } = this.props;
+    const updatedHooks = calculateHooks(selectedBox.width, selectedBox.height, selectedBox.inputs, updatedOutputs)
     onUpdateBox(selectedBox.id, {
       ...selectedBox,
       outputs: updatedOutputs,
+      hookCount: updatedOutputs+selectedBox.inputs,
+      hooks: updatedHooks
     });
+  };
+
+  calculateHooks = (width, height, inputs, outputs) => {
+    const hooks = [];
+    const totalHooks = inputs + outputs;
+    const hookSpacing = height / (totalHooks + 1);
+  
+    for (let i = 0; i < inputs; i++) {
+      hooks.push({ x: 0, y: (i + 1) * hookSpacing }); // Left side hooks
+    }
+  
+    for (let i = 0; i < outputs; i++) {
+      hooks.push({ x: width, y: (i + 1) * hookSpacing }); // Right side hooks
+    }
+  
+    return hooks;
   };
 
   render() {

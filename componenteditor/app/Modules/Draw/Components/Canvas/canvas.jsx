@@ -65,6 +65,14 @@ class Canvas extends Component {
     this.canvasManagerRef.current.handleKeyDown(e, this.props.deleteBox, this.props.clearSelection);
     this.setState(this.canvasManagerRef.current.state);
   };
+  handleHookPointsUpdate = (updatedBoxData, newHookPoints) => {
+  this.setState((prevState) => ({
+    boxes: prevState.boxes.map((box) =>
+      box.id === updatedBoxData.id ? { ...updatedBoxData, hookPoints: newHookPoints } : box
+    ),
+  }));
+};
+
 
   render() {
     const { selectedTool, boxes, lines, updateBoxPosition, deleteBox: deleteBoxCallback } = this.props;
@@ -88,6 +96,7 @@ class Canvas extends Component {
             updateHookCount={(newCount) => updateBoxHookCount(box.id, newCount)}
             deleteBox={deleteBoxCallback}
             selectedTool={selectedTool}
+            onHookPointsUpdate={this.handleHookPointsUpdate}
             onHookClick={this.handleHookClick}
             canvasWidth={canvasRect ? canvasRect.width : 0}
             canvasHeight={canvasRect ? canvasRect.height : 0}
@@ -103,6 +112,7 @@ class Canvas extends Component {
             updateBoxPosition={() => {}}
             onPointerDown={() => {}}
             onHookClick={() => {}}
+            onHookPointsUpdate={() => {}}
             deleteBox={() => {}}
             canvasWidth={canvasRect ? canvasRect.width : 0}
             canvasHeight={canvasRect ? canvasRect.height : 0}

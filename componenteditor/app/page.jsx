@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Canvas from "@Modules/Draw/Components/Canvas";
 import Toolbar from "@Modules/Toolbar/Components/Toolbar";
 import PropertiesPanel from "@Modules/Toolbar/Components/PropertiesPanel";
-import { useCanvas } from "./Modules/Draw/Hooks/useCanvas";
+import useCanvas from "./Modules/Draw/Hooks/useCanvas";
+
 import Modes from "./Modules/Toolbar/Modes";
 
 export default function Home() {
@@ -15,11 +16,13 @@ export default function Home() {
   const handleSelectTool = (tool) => {
     console.log(`App.js Selected Tool: ${tool}`);
     setSelectedTool(tool);
-    selectBox(null); // Clear the selection when changing modes
+    selectBox(null);
+    setSelectedBoxId(null)
   };
 
   const handleSelectBox = (id) => {
     console.log(`App.js Selected Box ID: ${id}`);
+    setSelectedBoxId(id);
     selectBox(id);
   };
 
@@ -51,12 +54,8 @@ export default function Home() {
     }
   }
 
-  const selectedBox = boxes.find((box) => box.selected === true);
+  const selectedBox = boxes.find((box) => box.id === selectedBoxId);
   console.log(`App.js Selected Box: ${selectedBoxId}`, selectedBox);
-  const clearSelection = () => {
-    console.log(`App.js Clearing selection ${selectedBoxId}`);
-    //selectBox(null);  // TODO: Uncomment this line when fix the issue that allows the canvas to be clicked when a box is clicked  
-  };
 
   return (
     <div className="app-container">
@@ -76,7 +75,6 @@ export default function Home() {
           onSelectBox={handleSelectBox}
           deleteBox={handleDeleteBox}
           onAddLine={handleAddLine}
-          clearSelection={clearSelection}
         />
       </div>
     </div>

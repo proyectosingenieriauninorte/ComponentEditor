@@ -1,89 +1,46 @@
-import "./line.css";
-import React, { Component } from "react";
+import React, { useMemo } from "react";
+import useCanvas from "../../Hooks/useCanvas";
 
-class Line extends Component {
-  constructor(props) {
-    super(props);
-    const { data, boxes } = this.props;
-    const { startBoxId, endBoxId, startHook, endHook } = data;
-    const startBox = boxes.find((box) => box.id === startBoxId);
-    const endBox = boxes.find((box) => box.id === endBoxId);
+const Line = ({ data, boxes }) => {
+  const { getHookOffsets } = useCanvas();
 
+  const startBox = useMemo(() => boxes.find((box) => box.id === data.startBoxId), [boxes, data.startBoxId]);
+  const endBox = useMemo(() => boxes.find((box) => box.id === data.endBoxId), [boxes, data.endBoxId]);
 
-
-    
-    this.hookOffsets = {
-      StartOffsets: {
-        top: { x: startBox.width / 2, y: 0 },
-        right: { x: startBox.width, y: startBox.height / 2 },
-        bottom: { x: startBox.width / 2, y: startBox.height },
-        left: { x: 0, y: startBox.height / 2 },
-      },
-      EndOffsets: {
-      top: { x: endBox.width / 2, y: 0 },
-      right: { x: endBox.width, y: endBox.height / 2 },
-      bottom: { x: endBox.width / 2, y: endBox.height },
-      left: { x: 0, y: endBox.height / 2 },
-      }
-    };
-    this.getPerpendicularSegment = this.getPerpendicularSegment.bind(this);
+  if (!startBox || !endBox) {
+    console.error("Start or End Box not found", { startBox, endBox });
+    return null;
   }
 
+  const startOffset = getHookOffsets(startBox, data.startHook);
+  const endOffset = getHookOffsets(endBox, data.endHook);
 
+  const startX = startOffset.x + startBox.x;
+  const startY = startOffset.y + startBox.y;
+  const endX = endOffset.x + endBox.x;
+  const endY = endOffset.y + endBox.y;
 
-  getPerpendicularSegment(hook, x, y) {
-    switch (hook) {
-      case "top":
-        return `L ${x},${y - 20} `;
-      case "bottom":
-        return `L ${x},${y + 20} `;
-      case "left":
-        return `L ${x - 20},${y} `;
-      case "right":
-        return `L ${x + 20},${y} `;
-      default:
-        return "";
-    }
-  }
+  const pathD = `
+    M ${startX},${startY} 
+    L ${endX},${endY}
+  `;
 
-  render() {
-    const { data, boxes } = this.props;
-    const { startBoxId, endBoxId, startHook, endHook } = data;
-    const startBox = boxes.find((box) => box.id === startBoxId);
-    const endBox = boxes.find((box) => box.id === endBoxId);
-
-    if (!startBox || !endBox) {
-      console.error("Start or End Box not found", { startBox, endBox });
-      return null;
-    }
-
-    if (!this.hookOffsets.StartOffsets[startHook] || !this.hookOffsets.EndOffsets[endHook]) {
-      console.error("Invalid startHook or endHook", { startHook, endHook });
-      return null;
-    }
-    console.log(`Line from ${startBoxId} to ${endBoxId} from ${startHook} to ${endHook}`);
-    console.log("StartOffsets", this.hookOffsets.StartOffsets);
-    console.log("EndOffsets", this.hookOffsets.EndOffsets);
-    const startX = startBox.x + this.hookOffsets.StartOffsets[startHook].x;
-    const startY = startBox.y + this.hookOffsets.StartOffsets[startHook].y;
-    const endX = endBox.x + this.hookOffsets.EndOffsets[endHook].x;
-    const endY = endBox.y + this.hookOffsets.EndOffsets[endHook].y;
-
-    const pathD = `
-      M ${startX},${startY} 
-      ${this.getPerpendicularSegment(startHook, startX, startY)}
-      ${this.getPerpendicularSegment(endHook, endX, endY)}
-      L ${endX},${endY}
-    `;
-
-    return (
-      <svg style={{ position: "absolute", overflow: "visible" }}>
-        <g>
-          <path d={pathD} stroke="gray" strokeWidth="2" fill="none" />
-        </g>
-      </svg>
-    );
-  }
-}
+  return (
+    <svg
+      style={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+      }}
+    >
+      <g>
+        <path d={pathD} stroke="gray" strokeWidth="2" fill="none" />
+      </g>
+    </svg>
+  );
+};
 
 export default React.memo(Line);
