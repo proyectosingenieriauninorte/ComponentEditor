@@ -1,47 +1,45 @@
 import React, { Component } from "react";
 import Modes from "@/app/Modules/Toolbar/Modes";
-import { useEffect } from "react";
 import "./box.css";
+import { calculateHooks } from "@/app/Modules/Toolbar/Components/utils/hooks.js";
 
 class Box extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hookPoints: [],
+      hookCount: 0,
       dragging: false,
       offset: { x: 0, y: 0 },
     };
-
-    const { boxData } = this.props;
-
-    const boxWidth = boxData.width / 2;
-    const boxHeight = boxData.height / 2;
-
-    this.hookPoints = [
-      { id: "top", x: boxWidth, y: 0 },
-      { id: "right", x: boxData.width, y: boxHeight },
-      { id: "bottom", x: boxWidth, y: boxData.height },
-      { id: "left", x: 0, y: boxHeight },
-    ];
-
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   updateHookPoints() {
-    const { boxData } = this.props;
-    const boxWidth = boxData.width / 2;
-    const boxHeight = boxData.height / 2;
-    this.hookPoints = [
-      { id: "top", x: boxWidth, y: 0 },
-      { id: "right", x: boxData.width, y: boxHeight },
-      { id: "bottom", x: boxWidth, y: boxData.height },
-      { id: "left", x: 0, y: boxHeight },
-    ];
+    const { boxData, onHookPointsUpdate } = this.props;
+
+    const updatedHooks = calculateHooks(boxData.width, boxData.height, boxData.inputs, boxData.outputs)
+
+    // Call the callback with updated hook points
+    if (typeof onHookPointsUpdate === 'function') {
+      onHookPointsUpdate({ ...boxData, hookCount: boxData.inputs+boxData.outputs },updatedHooks);
+    } else {
+      console.error("onHookPointsUpdate is not a function");
+    }
+
+    // Update state only if it changes
+    if (JSON.stringify(this.state.hookPoints) !== JSON.stringify(updatedHooks) || this.state.hookCount !== boxData.inputs + boxData.outputs) {
+      this.setState({ 
+        hookPoints: updatedHooks, 
+        hookCount: boxData.inputs + boxData.outputs
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.boxData !== this.props.boxData) {
+    if (prevProps.boxData !== this.props.boxData || prevProps.selectedTool !== this.props.selectedTool) {
       this.updateHookPoints();
     }
   }
@@ -79,6 +77,8 @@ class Box extends Component {
   }
 
   componentDidMount() {
+    console.log("Box component mounted");
+    this.updateHookPoints();
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
   }
@@ -88,8 +88,14 @@ class Box extends Component {
     document.removeEventListener("mouseup", this.handleMouseUp);
   }
 
+  handleHookClick(hook) {
+    console.log('Hook clicked:', hook);
+  }
+
   render() {
     const { boxData, selectedTool, onHookClick } = this.props;
+    const { hookPoints } = this.state;
+    const totalHooks = this.state.hookCount;
 
     return (
       <svg
@@ -102,7 +108,6 @@ class Box extends Component {
           position: "absolute",
           left: boxData.x,
           top: boxData.y,
-          cursor: selectedTool === Modes.SELECT ? "move" : "default",
         }}
       >
         <foreignObject
@@ -127,24 +132,31 @@ class Box extends Component {
           </>
         )}
 
-        {selectedTool === Modes.NEW_LINE &&
-          this.hookPoints.map((point) => (
-            <circle
-              key={point.id}
-              cx={point.x}
-              cy={point.y}
-              r="5"
-              fill="blue"
-              onClick={(e) => {
-                e.stopPropagation();
+        {selectedTool === Modes.NEW_LINE && hookPoints.slice(0, totalHooks).map((point) => (
+          <circle
+            key={point.id}
+            cx={point.x}
+            cy={point.y}
+            r="5"
+            fill="blue"
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log(`Hook clicked: Box ${boxData.id}, Hook ${point.id}`);
+              console.log(`Hook clicked: x: ${point.y}, y: ${point.x}`)
+              
+              // Validar si el hook es válido antes de llamar a onHookClick
+              if (point && point.id) {
                 onHookClick(boxData.id, point.id);
-              }}
-              style={{ cursor: "crosshair" }}
-            />
-          ))}
+              } else {
+                console.error(`Invalid hook clicked: ${point.id}`);
+              }
+            }}
+            style={{ cursor: "crosshair" }}
+          />
+        ))}
       </svg>
     );
   }
 }
 
-export default React.memo(Box);
+export default Box;

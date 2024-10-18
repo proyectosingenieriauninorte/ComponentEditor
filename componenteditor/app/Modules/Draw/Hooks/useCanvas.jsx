@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useCanvas() {
+const useCanvas = () => {
   const [boxes, setBoxes] = useState([]);
   const [lines, setLines] = useState([]);
   const gridSize = 20;
@@ -42,7 +42,39 @@ export function useCanvas() {
     return { x, y };
   };
 
-  const addBox = (x, y, width = 150, height = 50, color = '#f00') => {
+  const getHookOffsets = (box, hook) => {
+    console.log(box.id)
+    console.log(box)
+    if (!box || !box.hookCount || !box.hooks) {
+      console.error(`Box, hookCount, or hooks not found for hook ${hook}`, box);
+      return { x: 0, y: 0 };
+    }
+
+    const hookIndex = parseInt(hook.replace('hook', ''), 10) - 1;
+    console.error(`Hook Index: ${hookIndex}`);
+    console.error(`Number of hooks ${box.hookCount}`);
+    if (isNaN(hookIndex) || hookIndex < 0 || hookIndex >= box.hookCount) {
+      console.error(`Invalid hook ${hook} for box`, box);
+      return { x: 0, y: 0 };
+    }
+
+    const hookPoint = box.hooks[hookIndex];
+    if (!hookPoint) {
+      console.error(`Hook point not found for hook ${hook} in box`, box);
+      return { x: 0, y: 0 };
+    }
+    return hookPoint;
+  };
+
+  const onHookPointsUpdate = (updatedBoxData, hookPoints) => {
+    setBoxes((prevBoxes) =>
+      prevBoxes.map((box) =>
+        box.id === updatedBoxData.id ? { ...updatedBoxData, hooks: hookPoints } : box
+      )
+    );
+  };
+
+  const addBox = (x, y, width = 150, height = 50, color = '#f00', inputs = 1, outputs = 1) => {
     const snappedX = snapToGrid(x);
     const snappedY = snapToGrid(y);
 
@@ -52,15 +84,40 @@ export function useCanvas() {
       console.log(`Box moved to nearest valid position at (${finalPosition.x}, ${finalPosition.y}).`);
     }
 
+    let boxNameIndex = boxes.length + 1;
+
+    while (!isBoxNameUnique(`Box ${boxNameIndex}`)) {
+      boxNameIndex++;
+    }
+    
+    const boxName = `Box ${boxNameIndex}`;
+
+    // Calculate hook points dynamically based on inputs and outputs
+    const hooks = [];
+    const totalHooks = inputs + outputs;
+    const hookSpacing = height / (totalHooks + 1);
+
+    for (let i = 0; i < inputs; i++) {
+      hooks.push({ x: 0, y: (i + 1) * hookSpacing }); // Left side hooks
+    }
+
+    for (let i = 0; i < outputs; i++) {
+      hooks.push({ x: width, y: (i + 1) * hookSpacing }); // Right side hooks
+    }
+
     const newBox = {
       id: boxes.length + 1,
-      name: `Box ${boxes.length + 1}`,
+      name: boxName,
       x: finalPosition.x,
       y: finalPosition.y,
       width,
       height,
       color,
+      inputs,
+      outputs,
+      hookCount: inputs + outputs, // Define hookCount based on total hooks
       selected: false,
+      hooks,
     };
 
     setBoxes([...boxes, newBox]);
@@ -121,14 +178,31 @@ export function useCanvas() {
     );
   };
 
+  const isBoxNameUnique = (newBoxName) => {
+    return !boxes.some((box) => box.name === newBoxName);
+  };
+
+  const updateBoxHookCount = (boxId, newHookCount) => {
+    setBoxes(prevBoxes => prevBoxes.map(box => 
+      box.id === boxId ? { ...box, hookCount: newHookCount } : box
+    ));
+  };
+
   return {
     boxes,
+    setBoxes,
     lines,
+    isBoxNameUnique,
     addBox,
     updateBoxPosition,
     updateBox,
     deleteBox,
     addLine,
     selectBox,
+    updateBoxHookCount,
+    getHookOffsets, // Export the getHookOffsets method
+    onHookPointsUpdate,
   };
-}
+};
+
+export default useCanvas;
